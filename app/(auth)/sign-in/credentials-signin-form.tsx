@@ -1,4 +1,5 @@
 "use client";
+
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { signInDefaultValues } from "@/lib/constants";
@@ -23,7 +24,7 @@ const CredentialsSignInForm = () => {
 
     return (
       <Button disabled={pending} className="w-full" variant="default">
-        {pending ? "Signin in ..." : "Sign In"}
+        {pending ? "Signin In ..." : "Sign In"}
       </Button>
     );
   };
@@ -36,7 +37,7 @@ const CredentialsSignInForm = () => {
           <Input
             id="email"
             type="email"
-            required={true}
+            required
             name="email"
             autoComplete="email"
             defaultValue={signInDefaultValues.email}
@@ -49,7 +50,7 @@ const CredentialsSignInForm = () => {
           <Input
             id="password"
             type="password"
-            required={true}
+            required
             name="password"
             autoComplete="password"
             defaultValue={signInDefaultValues.password}
