@@ -1,6 +1,7 @@
 import {z} from "zod";
 import { formatNumberWithDecimal } from "./utils";
 
+
 const currency = z
 .string()
 .refine(
@@ -42,3 +43,23 @@ export const signUpFormSchema = z.object({
     message: 'Passwords do not match',
     path: ['confirmPassword'],
 });
+
+// Cart Schemas
+export const cartItemSchema = z.object({
+    productId: z.string().min(1, 'Product ID is required'),
+    name: z.string().min(1, 'Product name is required'),
+    slug: z.string().min(1, 'Product slug is required'),
+    qty: z.number().int().nonnegative('Quantity must be a positive number'),
+    image: z.string().min(1, 'Product image is required'),
+    price: currency, 
+});
+
+export const insertCartSchema = z.object({
+    items: z.array(cartItemSchema),
+    itemsPrice: currency,
+    totalPrice: currency,
+    shippingPrice: currency,
+    taxPrice: currency,
+    sessionCartId: z.string().min(1, 'Session cart id is required'),
+    userId: z.string().optional().nullable(),
+  });
