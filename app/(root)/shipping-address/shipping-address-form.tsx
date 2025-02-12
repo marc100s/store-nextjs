@@ -47,7 +47,7 @@ const ShippingAddressForm = ({
           try {
             await updateUserAddress(data);
             toast({ title: 'Address updated successfully' });
-            router.push('/checkout');
+            router.push('/payment-method');
             resolve();
           } catch (error: unknown) {
             console.error('Update address error:', error);

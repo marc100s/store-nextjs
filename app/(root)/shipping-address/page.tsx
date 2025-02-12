@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic';
 
 import { auth } from "@/auth";
 import { getMyCart } from "@/lib/actions/cart.actions";
@@ -13,41 +13,64 @@ export const metadata: Metadata = {
     title: 'Shipping Address',
 };
 
+
 const ShippingAddressPage = async () => {
-    try {
-        // Fetch the cart
-        const cart = await getMyCart();
+    const cart = await getMyCart();
+  
+    if (!cart || cart.items.length === 0) redirect('/cart');
+  
+    const session = await auth();
+  
+    const userId = session?.user?.id;
+  
+    if (!userId) throw new Error('No user ID');
+  
+    const user = await getUserById(userId);
+  
+    return (
+      <>
+        <CheckoutSteps current={1} />
+        <ShippingAddressForm address={user.address as ShippingAddress} />
+      </>
+    );
+  };
+  
+  export default ShippingAddressPage;
+// const ShippingAddressPage = async () => {
+//     try {
+//         // Fetch the cart
+//         const cart = await getMyCart();
 
-        if (!cart || cart.items.length === 0) {
-            redirect('/cart');
-            return;
-        }
+//         if (!cart || cart.items.length === 0) {
+//             redirect('/cart');
+//             return;
+//         }
        
-        const session = await auth();
+//         const session = await auth();
         
-        if (!session) {
-            redirect('/sign-in'); // Redirect to login page if no session is found
-            return;
-        }
+//         if (!session) {
+//             redirect('/sign-in'); // Redirect to login page if no session is found
+//             return;
+//         }
 
-        const userId = session?.user?.id;
+//         const userId = session?.user?.id;
         
-        if (!userId) {
-            throw new Error('No user ID');
-        }
+//         if (!userId) {
+//             throw new Error('No user ID');
+//         }
 
-        // Fetch user details by ID
-        const user = await getUserById(userId);
-        return (
-            <>
-            <CheckoutSteps current={1} />
-            <ShippingAddressForm address={user.address as ShippingAddress} />
-            </>
-        );
-    } catch (error) {
-        console.error('Error:', error);
-        // You can add additional error handling here if needed
-    }
-}
+//         // Fetch user details by ID
+//         const user = await getUserById(userId);
+//         return (
+//             <>
+//             <CheckoutSteps current={1} />
+//             <ShippingAddressForm address={user.address as ShippingAddress} />
+//             </>
+//         );
+//     } catch (error) {
+//         console.error('Error:', error);
+//         // You can add additional error handling here if needed
+//     }
+// }
 
-export default ShippingAddressPage;
+// export default ShippingAddressPage;
