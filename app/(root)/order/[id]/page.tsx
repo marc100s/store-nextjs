@@ -3,7 +3,7 @@ import { getOrderById } from "@/lib/actions/order.actions";
 import { notFound } from "next/navigation";
 import { ShippingAddress } from "@/types";
 import OrderDetailsTable from './order-details-table';
-
+import { auth } from "@/auth";
 
 export const metadata: Metadata = {
     title: 'Order Details',
@@ -14,21 +14,21 @@ export const metadata: Metadata = {
       id: string;
     }>;
   }) => {
-    const params = await props.params;
-  
-    const { id } = params;
+    const { id } = await props.params;
   
     const order = await getOrderById(id);
     if (!order) notFound();
 
+    const session = await auth();
+
     return (
-        <OrderDetailsTable
-          order={{
-            ...order,
-            shippingAddress: order.shippingAddress as ShippingAddress,
-          }}
-          
-        />
-      );
+      <OrderDetailsTable
+        order={{
+          ...order,
+          shippingAddress: order.shippingAddress as ShippingAddress,
+        }}
+        PayPalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
+      />
+    );
     };
 export default OrderDetailsPage;

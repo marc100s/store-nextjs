@@ -9,7 +9,6 @@ import { formatError } from '../utils';
 import { ShippingAddress } from "@/types";
 import { z } from "zod";
 
-
 // Sign in user with credentials
 export async function signInWithCredentials(
   prevState: unknown,
@@ -72,8 +71,8 @@ export async function signUp(prevState: unknown, formData: FormData) {
     };
   }
 }
-// Sign user out
 
+// Sign user out
 export async function signOutUser() {
   await signOut();
 }
