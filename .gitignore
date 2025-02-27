@@ -15,7 +15,7 @@
 
 # next.js
 /.next/
-/out/
+/out/ # Remove this line if you're not using static exports
 
 # production
 /build
@@ -31,8 +31,10 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env
-.env*
+.env.local
+*.env.local
+.env.*
+!.env.example
 
 # vercel
 .vercel

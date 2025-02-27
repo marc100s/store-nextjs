@@ -12,15 +12,12 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    files: ["*.css"],
     rules: {
-      // Note: you must disable the base rule as it can report incorrect errors
-      "no-unused-vars": "on",
-      "@typescript-eslint/no-unused-vars": "error"
-    }
-  }
+      "no-unused-group-selectors": "off",
+      "tailwindcss/custom-formatter": "error",
+    },
+  },
 ];
 
 export default eslintConfig;
-
-
-

@@ -88,4 +88,12 @@ export const prisma = new PrismaClient({ adapter }).$extends({
       },
     },
   },
+  
 });
+
+// Conditionally import the Prisma debug module only in non-production environments
+if (process.env.NODE_ENV !== 'production') {
+  import('@prisma/debug').then(({ default: debug }) => {
+    debug.enable('*');
+  });
+}
