@@ -11,21 +11,22 @@ const currency = z
 
 //Schema for inserting products
 export const insertProductSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters long"),
-  slug: z.string().min(3, "Slug must be at least 3 characters long"),
-  category: z.string().min(3, "Category must be at least 3 characters long"),
-  description: z
-    .string()
-    .min(3, "Description must be at least 3 characters long"),
-  images: z.array(z.string()).min(1, "At least one image is required"),
-  brand: z.string().min(3, "Brand must be at least 3 characters long"),
-  rating: z.number().min(1, "Rating must be at least 1"),
-  numReviews: z.number().min(1, "Number of reviews must be at least 1"),
-  stock: z.coerce.number().min(1, "Stock must be at least 1"),
+  name: z.string().min(3, 'Name must be at least 3 characters'),
+  slug: z.string().min(3, 'Slug must be at least 3 characters'),
+  category: z.string().min(3, 'Category must be at least 3 characters'),
+  brand: z.string().min(3, 'Brand must be at least 3 characters'),
+  description: z.string().min(3, 'Description must be at least 3 characters'),
+  stock: z.coerce.number(),
+  images: z.array(z.string()).min(1, 'Product must have at least one image'),
   isFeatured: z.boolean(),
   banner: z.string().nullable(),
   price: currency,
 });
+
+// Schema for updating a product/s
+export const updateProductSchema = insertProductSchema.extend({
+  id: z.string().min(1, 'Id is required'),
+})
 
 // Schema for signing users in
 export const signInFormSchema = z.object({
@@ -123,4 +124,10 @@ export const paymentResultSchema = z.object({
 export const updateProfileSchema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters'),
   email: z.string().min(3, 'Email must be at least 3 characters')
+});
+
+// Schema to update users
+export const updateUserSchema = updateProfileSchema.extend({
+  id: z.string().min(1, 'ID is required'),
+  role: z.string().min(1, 'Role is required'),
 });

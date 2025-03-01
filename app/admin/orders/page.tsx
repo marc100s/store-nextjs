@@ -13,12 +13,10 @@ export const metadata: Metadata = {
 }
 
 const AdminOrdersPage = async (props: {
-    searchParams: Promise<{page: string}>
+    searchParams: Promise<{page: string; query: string}>;
 }) => {
-
-    const { page = '1', query: searchText } = await props.searchParams;
-
     await requireAdmin();
+    const { page = '1', query: searchText } = await props.searchParams;
 
     const orders = await getAllOrders({
         page: Number(page),

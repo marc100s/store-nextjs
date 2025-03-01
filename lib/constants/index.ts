@@ -31,3 +31,38 @@ export const LATEST_PRODUCTS_LIMIT =
   export const DEFAULT_PAYMENT_METHOD = process.env.DEFAULT_PAYMENT_METHOD || 'PayPal';
 
   export const PAGE_SIZE = Number(process.env.PAGE_SIZE) || 12;
+  
+  interface ProductDefaultValues {
+    name: string;
+    slug: string;
+    category: string;
+    images: string[];
+    brand: string;
+    description: string;
+    price: string;
+    stock: number;
+    rating: string;
+    numReviews: string;
+    isFeatured: boolean;
+    banner: string | null;
+  }
+  
+  export const productDefaultValues: ProductDefaultValues = {
+    name: "",
+    slug: "",
+    category: "",
+    images: [],
+    brand: "",
+    description: "",
+    price: "0",
+    stock: 0,
+    rating: "0",
+    numReviews: "0",
+    isFeatured: false,
+    banner: null,
+  };
+
+  export const USER_ROLES = process.env.USER_ROLES
+  ? process.env.USER_ROLES.split(', ')
+  : ['admin', 'user'];
+  

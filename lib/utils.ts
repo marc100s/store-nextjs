@@ -76,7 +76,7 @@ export function formatCurrency(amount: number | string | null ) {
 }
 
 // Format Number
-const EUROPEAN_FORMATTER = new Intl.NumberFormat('es-ES'); // Spanish format
+// const EUROPEAN_FORMATTER = new Intl.NumberFormat('es-ES'); // Spanish format
 const US_FORMATTER = new Intl.NumberFormat('en-US'); // US format
 
 export function formatNumber(number: number) {
