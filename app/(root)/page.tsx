@@ -1,8 +1,11 @@
 import ProductList from "@/components/shared/product/product-list";
-import { getLatestProducts } from "@/lib/actions/product.actions";
+import { getLatestProducts, getFeaturedProducts } from "@/lib/actions/product.actions";
+import ProductCarousel from "@/components/shared/product/product-carousel";
+import ViewAllProductsButton from "@/components/view-all-products-button";
 
 const HomePage = async () => {
   const latestProducts = await getLatestProducts();
+  const featuredProducts = await getFeaturedProducts();
  // Transform the rating property to a number
  const transformedProducts = latestProducts.map(product => ({
   ...product,
@@ -11,7 +14,11 @@ const HomePage = async () => {
 
 return (
   <>
+    {featuredProducts.length > 0 && (
+      <ProductCarousel data={featuredProducts} />
+    )}
     <ProductList data={transformedProducts} title="Newest Arrivals" limit={4} />
+    <ViewAllProductsButton />
   </>
 );
 };

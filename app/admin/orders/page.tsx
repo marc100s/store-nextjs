@@ -25,13 +25,26 @@ const AdminOrdersPage = async (props: {
    
     return ( 
     <div className='space-y-2'>
-        <h2 className='h2-bold'>Orders</h2>
+        <div className="flex items-center gap-3">
+                <h1 className="h2-bold">Orders</h1>
+                {searchText && (
+                    <div>
+                        Filtered by <i>&quot;{searchText}&quot;</i>{' '}
+                        <Link href='/admin/orders'>
+                         <Button variant='outline' size='sm'>
+                            Remove filter
+                         </Button>
+                        </Link>
+                    </div>
+                )}
+            </div>
         <div className='overflow-x-auto'>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>ID</TableHead>
                 <TableHead>DATE</TableHead>
+                <TableHead>BUYER</TableHead>
                 <TableHead>TOTAL</TableHead>
                 <TableHead>PAID</TableHead>
                 <TableHead>DELIVERED</TableHead>
@@ -42,8 +55,10 @@ const AdminOrdersPage = async (props: {
               {orders.data.map((order) => (
                 <TableRow key={order.id}>
                   <TableCell>{formatId(order.id)}</TableCell>
+                  <TableCell>{formatDateTime(order.createdAt).dateTime}</TableCell>
+                  <TableCell> {order.user.name}</TableCell>
                   <TableCell> {formatCurrency(order.totalPrice)}</TableCell>
-                  <TableCell>{formatCurrency(order.totalPrice)}</TableCell>
+                
                   <TableCell>
                     {order.isPaid && order.paidAt
                       ? formatDateTime(order.paidAt).dateTime

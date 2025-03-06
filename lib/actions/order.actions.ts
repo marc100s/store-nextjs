@@ -11,7 +11,7 @@ import { prisma } from "@/db/prisma";
 import { paypal } from "../paypal";
 import { revalidatePath } from "next/cache";
 import { PAGE_SIZE } from "../constants";
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 // Create order and create order items
 export async function createOrder() {
@@ -260,8 +260,7 @@ async function updateOrderToPaid({
   }
 }
 
-// GET THE USER'S ORDER
-
+// Get user's orders
 export async function getMyOrders({
   limit = PAGE_SIZE,
   page,
@@ -270,17 +269,17 @@ export async function getMyOrders({
   page: number;
 }) {
   const session = await auth();
-  if (!session) throw new Error("User is not authorized");
+  if (!session) throw new Error('User is not authorized');
 
   const data = await prisma.order.findMany({
-    where: { userId: session?.user?.id! },
-    orderBy: { createdAt: "desc" },
+    where: { userId: session?.user?.id ?? undefined},
+    orderBy: { createdAt: 'desc' },
     take: limit,
     skip: (page - 1) * limit,
   });
 
   const dataCount = await prisma.order.count({
-    where: { userId: session?.user?.id! },
+    where: { userId: session?.user?.id ?? undefined},
   });
 
   return {
@@ -288,8 +287,6 @@ export async function getMyOrders({
     totalPages: Math.ceil(dataCount / limit),
   };
 }
-
-
 
 type SalesDataType = {
   month: string;
@@ -344,11 +341,25 @@ export async function getOrderSummary() {
   export async function getAllOrders({
     limit = PAGE_SIZE,
     page, 
+    query
   } : {
     limit?: number;
     page: number;
+    query: string;
   }) {
+    const queryFilter: Prisma.OrderWhereInput = query && query !== 'all' ? {
+      user: {
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        } as Prisma.StringFilter
+      }
+    } : {};
+
     const data = await prisma.order.findMany({
+      where: {
+        ...queryFilter
+      },
       orderBy: { createdAt: 'desc'},
       take: limit,
       skip: (page - 1) * limit,
