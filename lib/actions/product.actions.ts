@@ -1,4 +1,3 @@
-
 'use server';
 import { prisma } from '@/db/prisma';
 import { convertToPlainObject, formatError } from '../utils';
@@ -15,13 +14,7 @@ export async function getLatestProducts() {
     orderBy: { createdAt: 'desc' },
   });
 
-  // Transform the rating property to a number
-  const transformedData = data.map(product => ({
-    ...product,
-    rating: Number(product.rating),
-  }));
-
-  return convertToPlainObject(transformedData);
+  return convertToPlainObject(data);
 }
 
 // Get single product by it's slug
@@ -203,11 +196,5 @@ export async function getFeaturedProducts() {
     take: 4,
   });
 
-  // Transform the rating property to a number
-  const transformedData = data.map(product => ({
-    ...product,
-    rating: Number(product.rating),
-  }));
-
-  return convertToPlainObject(transformedData);
+  return convertToPlainObject(data);
 }
