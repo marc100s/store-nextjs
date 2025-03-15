@@ -7,10 +7,10 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { signUp } from '@/lib/actions/user.actions';
+import { signUpUser } from '@/lib/actions/user.actions';
 
 const SignUpForm = () => {
-  const [data, action] = useActionState(signUp, {
+  const [data, action] = useActionState(signUpUser, {
     message: '',
     success: false,
   });
