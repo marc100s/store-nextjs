@@ -1,54 +1,72 @@
-"use server";
+'use server';
 
-import { shippingAddressSchema, signInFormSchema, signUpFormSchema, paymentMethodSchema, updateUserSchema } from "../validators";
-import { auth, signIn, signOut } from "@/auth";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { hashSync } from "bcrypt-ts-edge";
-import { prisma } from "@/db/prisma";
+import {
+  shippingAddressSchema,
+  signInFormSchema,
+  signUpFormSchema,
+  paymentMethodSchema,
+  updateUserSchema,
+} from '../validators';
+import { auth, signIn, signOut } from '@/auth';
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
+import { hashSync } from 'bcrypt-ts-edge';
+import { prisma } from '@/db/prisma';
 import { formatError } from '../utils';
-import { ShippingAddress } from "@/types";
-import { z } from "zod";
-import { Prisma } from "@prisma/client";
-import { PAGE_SIZE } from "../constants";
-import { revalidatePath } from "next/cache";
-import { getMyCart } from "./cart.actions";
+import { ShippingAddress } from '@/types';
+import { z } from 'zod';
+import { PAGE_SIZE } from '../constants';
+import { revalidatePath } from 'next/cache';
+import { Prisma } from '@prisma/client';
+import { getMyCart } from './cart.actions';
 
-// Sign in user with credentials
+// Sign in the user with credentials
 export async function signInWithCredentials(
   prevState: unknown,
   formData: FormData
 ) {
   try {
     const user = signInFormSchema.parse({
-      email: formData.get("email"),
-      password: formData.get("password"),
+      email: formData.get('email'),
+      password: formData.get('password'),
     });
 
-    await signIn("credentials", user);
+    await signIn('credentials', user);
 
-    return { success: true, message: "Signed in successfully" };
+    return { success: true, message: 'Signed in successfully' };
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
     }
-
-    return { success: false, message: "Invalid email or password" };
+    return { success: false, message: 'Invalid email or password' };
   }
 }
 
-// Register a new user
-export async function signUp(prevState: unknown, formData: FormData) {
+// Sign user out
+export async function signOutUser() {
+  // get current users cart and delete it so it does not persist to next user
+  const currentCart = await getMyCart();
+
+  if (currentCart?.id) {
+    await prisma.cart.delete({ where: { id: currentCart.id } });
+  } else {
+    console.warn('No cart found for deletion.');
+  }
+  await signOut();
+}
+
+// Sign up user
+export async function signUpUser(prevState: unknown, formData: FormData) {
   try {
     const user = signUpFormSchema.parse({
-      name: formData.get("name"),
-      email: formData.get("email"),
-      confirmPassword: formData.get("confirmPassword"),
-      password: formData.get("password"),
+      name: formData.get('name'),
+      email: formData.get('email'),
+      password: formData.get('password'),
+      confirmPassword: formData.get('confirmPassword'),
     });
 
     const plainPassword = user.password;
 
-    user.password = hashSync(user.password, 10);
+    user.password = await hashSync(user.password);
 
     await prisma.user.create({
       data: {
@@ -58,30 +76,18 @@ export async function signUp(prevState: unknown, formData: FormData) {
       },
     });
 
-    await signIn("credentials", {
+    await signIn('credentials', {
       email: user.email,
       password: plainPassword,
     });
 
-    return { success: true, message: "User created successfully" };
+    return { success: true, message: 'User registered successfully' };
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
     }
-
-    return {
-      success: false,
-      message: formatError(error),
-    };
+    return { success: false, message: formatError(error) };
   }
-}
-
-// Sign user out
-export async function signOutUser() {
-  // get current users cart and delete it so it does not persist to next user
-  const currentCart = await getMyCart();
-  await prisma.cart.delete({ where: { id: currentCart?.id } });
-  await signOut();
 }
 
 // Get user by the ID
@@ -89,18 +95,17 @@ export async function getUserById(userId: string) {
   const user = await prisma.user.findFirst({
     where: { id: userId },
   });
-
   if (!user) throw new Error('User not found');
   return user;
 }
 
-// Update user's address
+// Update the user's address
 export async function updateUserAddress(data: ShippingAddress) {
   try {
     const session = await auth();
 
     const currentUser = await prisma.user.findFirst({
-      where: { id: session?.user?.id ?? undefined },
+      where: { id: session?.user?.id },
     });
 
     if (!currentUser) throw new Error('User not found');
@@ -122,11 +127,13 @@ export async function updateUserAddress(data: ShippingAddress) {
 }
 
 // Update user's payment method
-export async function updateUserPaymentMethod(data: z.infer<typeof paymentMethodSchema>) {
+export async function updateUserPaymentMethod(
+  data: z.infer<typeof paymentMethodSchema>
+) {
   try {
     const session = await auth();
     const currentUser = await prisma.user.findFirst({
-      where: { id: session?.user?.id ?? undefined },
+      where: { id: session?.user?.id },
     });
 
     if (!currentUser) throw new Error('User not found');
@@ -148,19 +155,25 @@ export async function updateUserPaymentMethod(data: z.infer<typeof paymentMethod
 }
 
 // Update the user profile
-export async function updateProfile(user: { name: string, email: string }) {
+export async function updateProfile(user: { name: string; email: string }) {
   try {
     const session = await auth();
 
     const currentUser = await prisma.user.findFirst({
-      where: { id: session?.user?.id ?? 'default-user-id'},
+      where: {
+        id: session?.user?.id,
+      },
     });
 
     if (!currentUser) throw new Error('User not found');
 
     await prisma.user.update({
-      where: { id: currentUser.id },
-      data: { name: user.name },
+      where: {
+        id: currentUser.id,
+      },
+      data: {
+        name: user.name,
+      },
     });
 
     return {
