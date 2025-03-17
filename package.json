@@ -64,6 +64,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
+    "@playwright/test": "^1.51.0",
     "@prisma/client": "^6.4.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.17.18",
