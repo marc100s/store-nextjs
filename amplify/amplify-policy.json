@@ -1,0 +1,37 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "amplify:ListApps",
+        "amplify:GetApp",
+        "amplify:ListBranches",
+        "amplify:GetBranch",
+        "amplify:ListJobs",
+        "amplify:GetJob",
+        "amplify:StartJob",
+        "amplify:StopJob",
+        "amplify:CreateBranch",
+        "amplify:UpdateBranch",
+        "amplify:DeleteBranch",
+        "amplify:CreateDeployment",
+        "amplify:StartDeployment",
+        "amplify:GetBackendEnvironment",
+        "amplify:ListBackendEnvironments",
+        "amplify:CreateBackendEnvironment",
+        "amplify:UpdateBackendEnvironment",
+        "amplify:DeleteBackendEnvironment",
+        "amplify:ListWebhooks",
+        "amplify:CreateWebhook",
+        "amplify:DeleteWebhook",
+        "amplify:UpdateWebhook",
+        "amplify:ListDomainAssociations",
+        "amplify:CreateDomainAssociation",
+        "amplify:UpdateDomainAssociation",
+        "amplify:DeleteDomainAssociation"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

@@ -30,12 +30,21 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
+# env files (sensitive information)
 .env
 .env.local
+.env.development
+.env.production
+.env.staging
 *.env.local
 .env.*
 !.env.example
+!.env.template
+
+# Amplify environment files
+amplify/.env
+amplify/.env.*
+!amplify/.env.example
 
 # vercel
 .vercel
@@ -50,6 +59,29 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# AWS and Authentication (sensitive)
+.aws/
+aws-credentials
+aws-config
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# API Keys and Secrets (sensitive)
+stripe_*.json
+paypal_*.json
+*-secret.json
+*-private-key.json
+credentials.json
+secrets.json
+
+# Database and Service URLs (sensitive)
+database.json
+db-config.json
+service-account*.json
 
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
@@ -72,3 +104,20 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+# Additional Amplify security (exclude sensitive backend files)
+amplify/backend/awscloudformation/
+amplify/backend/*/parameters.json
+amplify/backend/*/stacks/
+amplify/backend/.amplifyrc
+# Note: team-provider-info.json is kept in git as it contains non-sensitive config
+
+# Generated and temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.vscode/settings.json
+.idea/
+*.log

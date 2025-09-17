@@ -9,18 +9,33 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Installing dependencies and generating Prisma client"
-        - npm ci --prefer-offline --no-audit
+        - echo "Installing dependencies"
+        - npm ci --prefer-offline --no-audit --legacy-peer-deps
+        - echo "Generating Prisma client"
         - npx prisma generate
+        - echo "Checking environment variables"
+        - env | grep -E "(DATABASE_URL|NEXTAUTH_|STRIPE_|PAYPAL_|UPLOADTHING_|RESEND_)" || echo "Environment variables not fully configured"
     build:
       commands:
         - echo "Building Next.js application"
         - npm run build
+        - echo "Build completed successfully"
   artifacts:
     baseDirectory: .next
     files:
       - '**/*'
+      - '!node_modules/**/*'
   cache:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
+      - ~/.npm/**/*
+  customHeaders:
+    - pattern: '**/*'
+      headers:
+        - key: X-Frame-Options
+          value: DENY
+        - key: X-Content-Type-Options
+          value: nosniff
+        - key: Referrer-Policy
+          value: strict-origin-when-cross-origin
