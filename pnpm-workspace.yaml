@@ -1,4 +1,8 @@
-ignoredBuiltDependencies:
+packages:
+  - .
+  - amplify
+
+ignored-built-dependencies:
   - '@prisma/client'
   - '@prisma/engines'
   - bufferutil
@@ -6,5 +10,5 @@ ignoredBuiltDependencies:
   - prisma
   - sharp
 
-onlyBuiltDependencies:
+only-built-dependencies:
   - unrs-resolver
