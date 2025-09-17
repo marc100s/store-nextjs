@@ -1,0 +1,13 @@
+# AWS Amplify specific files
+amplify/
+aws-exports.js
+awsconfiguration.json
+amplifyconfiguration.json
+
+# Environment files
+.env.local
+.env*.local
+
+# Development files
+*.log
+.DS_Store
