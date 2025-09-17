@@ -2,7 +2,6 @@
   "framework": "nextjs",
   "buildCommand": "pnpm run build",
   "installCommand": "pnpm install",
-  "nodeVersion": "18.x",
   "functions": {
     "app/**/*.ts": {
       "maxDuration": 30
