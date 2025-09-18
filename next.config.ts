@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone", // Required for AWS Amplify SSR support
+  // Remove standalone output for AWS Amplify compatibility
+  // output: "standalone", 
   images: {
     remotePatterns: [
       {
@@ -10,7 +11,16 @@ const nextConfig: NextConfig = {
         port: '',
       },
     ]
-  }, 
+  },
+  // Add experimental features for better Amplify support
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client', 'prisma']
+  },
+  // Ensure environment variables are available
+  env: {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    DATABASE_URL: process.env.DATABASE_URL,
+  }
 };
 
 export default nextConfig;
