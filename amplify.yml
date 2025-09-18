@@ -12,7 +12,7 @@ frontend:
         - npm install -g pnpm@10.17.0
         - echo "Verifying pnpm installation"
         - pnpm --version
-        - echo "Installing dependencies with pnpm"
+        - echo "Installing dependencies with pnpm from root directory"
         - pnpm install --frozen-lockfile
         - echo "Generating Prisma client"
         - pnpm prisma generate

@@ -1,6 +1,5 @@
 packages:
   - .
-  - amplify
 
 ignored-built-dependencies:
   - '@prisma/client'
