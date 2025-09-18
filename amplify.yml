@@ -9,22 +9,24 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Installing dependencies"
-        - npm ci --prefer-offline --no-audit --legacy-peer-deps
+        - echo "Installing dependencies with pnpm"
+        - pnpm install --frozen-lockfile
         - echo "Generating Prisma client"
-        - npx prisma generate
+        - pnpm prisma generate
         - echo "Checking environment variables"
         - env | grep -E "(DATABASE_URL|NEXTAUTH_|STRIPE_|PAYPAL_|UPLOADTHING_|RESEND_)" || echo "Environment variables not fully configured"
     build:
       commands:
-        - echo "Building Next.js application"
-        - npm run build
+        - echo "Building Next.js application with pnpm"
+        - pnpm run build
         - echo "Build completed successfully"
   artifacts:
     baseDirectory: .next
     files:
       - '**/*'
       - '!node_modules/**/*'
+      - 'standalone/**/*'
+      - 'static/**/*'
   cache:
     paths:
       - node_modules/**/*
