@@ -14,7 +14,10 @@ const pool = new Pool({ connectionString });
 const adapter = new PrismaNeon({ connectionString });
 
 // Extends the PrismaClient with a custom result transformer to convert the price and rating fields to strings.
-export const prisma = new PrismaClient({ adapter }).$extends({
+export const prisma = new PrismaClient({ 
+  adapter,
+  log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error']
+}).$extends({
   result: {
     product: {
       price: {
@@ -91,9 +94,9 @@ export const prisma = new PrismaClient({ adapter }).$extends({
 
 });
 
-// Conditionally import the Prisma debug module only in non-production environments
+// Enable Prisma query logging in development
 if (process.env.NODE_ENV !== 'production') {
-  import('@prisma/debug').then(({ default: debug }) => {
-    debug.enable('*');
-  });
+  // Prisma logging can be configured via the PrismaClient constructor
+  // or through environment variables like DEBUG="prisma:*"
+  console.log('Development mode: Prisma logging enabled via constructor options');
 }
