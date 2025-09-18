@@ -8,8 +8,8 @@
     "config": {
       "SourceDir": ".",
       "DistributionDir": ".next",
-      "BuildCommand": "npm run build",
-      "StartCommand": "npm run start"
+      "BuildCommand": "pnpm run build",
+      "StartCommand": "pnpm run start"
     }
   },
   "providers": [
