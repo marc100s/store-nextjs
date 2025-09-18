@@ -8,6 +8,10 @@ frontend:
   phases:
     preBuild:
       commands:
+        - echo "Installing pnpm globally"
+        - npm install -g pnpm@10.17.0
+        - echo "Verifying pnpm installation"
+        - pnpm --version
         - echo "Installing dependencies with pnpm"
         - pnpm install --frozen-lockfile
         - echo "Generating Prisma client"
@@ -31,6 +35,7 @@ frontend:
       - node_modules/**/*
       - .next/cache/**/*
       - ~/.npm/**/*
+      - ~/.pnpm-store/**/*
   customHeaders:
     - pattern: '**/*'
       headers:
