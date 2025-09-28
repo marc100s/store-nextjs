@@ -12,10 +12,8 @@ const nextConfig: NextConfig = {
       },
     ]
   },
-  // Add experimental features for better Amplify support
-  experimental: {
-    serverComponentsExternalPackages: ['@prisma/client', 'prisma']
-  },
+  // Add external packages for better Amplify support  
+  serverExternalPackages: ['@prisma/client', 'prisma'],
   // Ensure environment variables are available
   env: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,

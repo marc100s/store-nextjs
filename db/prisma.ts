@@ -1,19 +1,18 @@
+import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@prisma/client";
 
-// Simplified Prisma setup for AWS Amplify compatibility
+// Neon setup for AWS Amplify (without WebSocket)
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
   throw new Error('DATABASE_URL is not defined');
 }
 
-// Standard Prisma client setup for AWS Amplify
-export const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: connectionString,
-    },
-  },
+// Use Neon adapter without WebSocket for AWS Amplify compatibility
+const adapter = new PrismaNeon({ connectionString });
+
+export const prisma = new PrismaClient({ 
+  adapter,
   log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error']
 }).$extends({
   result: {
