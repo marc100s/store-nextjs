@@ -9,7 +9,8 @@ import { NextResponse } from 'next/server';
 import { authConfig } from './auth.config';
 
 export const config = {
-  trustHost: true, // Trust all hosts for AWS Amplify deployment
+  // Trust specific hosts for AWS Amplify deployment
+  trustHost: process.env.NODE_ENV === 'production' ? true : undefined,
   pages: {
     signIn: '/sign-in',
     error: '/sign-in',
