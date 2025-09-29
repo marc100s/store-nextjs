@@ -9,6 +9,7 @@ import { NextResponse } from 'next/server';
 import { authConfig } from './auth.config';
 
 export const config = {
+  trustHost: true, // Trust all hosts for AWS Amplify deployment
   pages: {
     signIn: '/sign-in',
     error: '/sign-in',
@@ -140,8 +141,8 @@ export const config = {
 
       // Check for session cart cookie
       if (!request.cookies.get('sessionCartId')) {
-        // Generate new session cart id cookie
-        const sessionCartId = crypto.randomUUID();
+        // Generate new session cart id cookie (compatible with AWS Amplify)
+        const sessionCartId = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
         // Clone the req headers
         const newRequestHeaders = new Headers(request.headers);
