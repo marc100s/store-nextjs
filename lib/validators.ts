@@ -31,18 +31,42 @@ export const updateProductSchema = insertProductSchema.extend({
 // Schema for signing users in
 export const signInFormSchema = z.object({
   email: z.string().email("Invalid email"),
-  password: z.string().min(6, "Password must be at least 6 characters long"),
+  password: z.string().min(8, "Password must be at least 8 characters long"),
 });
+
+// Password validation function for stronger security
+const passwordSchema = z.string()
+  .min(8, "Password must be at least 8 characters long")
+  .max(128, "Password must be at most 128 characters long")
+  .refine((password) => {
+    // Check for at least one lowercase letter
+    if (!/[a-z]/.test(password)) {
+      return false;
+    }
+    // Check for at least one uppercase letter  
+    if (!/[A-Z]/.test(password)) {
+      return false;
+    }
+    // Check for at least one number
+    if (!/\d/.test(password)) {
+      return false;
+    }
+    // Check for at least one special character
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      return false;
+    }
+    return true;
+  }, {
+    message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+  });
 
 // Schema for Signing users up
 export const signUpFormSchema = z
   .object({
     name: z.string().min(3, "Name must be at least 3 characters long"),
     email: z.string().email("Invalid email"),
-    password: z.string().min(6, "Password must be at least 6 characters long"),
-    confirmPassword: z
-      .string()
-      .min(6, "Password must be at least 6 characters long"),
+    password: passwordSchema,
+    confirmPassword: passwordSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",

@@ -10,7 +10,12 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js/pure";
 import { useTheme } from "next-themes";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useMemo } from "react";
+
+// Create Stripe promise outside component to avoid recreation
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
+);
 
 const StripePayment = ({
   priceInCents,
@@ -21,11 +26,23 @@ const StripePayment = ({
   orderId: string;
   clientSecret: string;
 }) => {
-  const stripePromise = loadStripe(
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
-  );
 
   const { theme, systemTheme } = useTheme();
+
+  // Memoize Elements options to prevent unnecessary re-renders
+  const elementsOptions = useMemo(() => ({
+    clientSecret,
+    appearance: {
+      theme:
+        theme === 'dark'
+          ? 'night'
+          : theme === 'light'
+          ? 'stripe'
+          : systemTheme === 'light'
+          ? 'stripe'
+          : 'night',
+    },
+  }), [clientSecret, theme, systemTheme]);
 
   // Stripe Form Component
   const StripeForm = () => {
@@ -88,19 +105,7 @@ const StripePayment = ({
     // Return for StripePayment
     return (
       <Elements
-        options={{
-          clientSecret,
-          appearance: {
-            theme:
-              theme === 'dark'
-                ? 'night'
-                : theme === 'light'
-                ? 'stripe'
-                : systemTheme === 'light'
-                ? 'stripe'
-                : 'night',
-          },
-        }}
+        options={elementsOptions}
         stripe={stripePromise}
       >
         <StripeForm />

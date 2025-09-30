@@ -9,8 +9,13 @@ import { NextResponse } from 'next/server';
 import { authConfig } from './auth.config';
 
 export const config = {
-  // Trust specific hosts for AWS Amplify deployment
-  trustHost: process.env.NODE_ENV === 'production' ? true : undefined,
+  // Trust specific hosts for AWS Amplify deployment - More secure approach
+  trustHost: process.env.NODE_ENV === 'production' ? (
+    // Only trust if we're on Amplify or have NEXTAUTH_URL set
+    process.env.NEXTAUTH_URL?.includes('amplifyapp.com') || 
+    process.env.NEXTAUTH_URL?.includes('vercel.app') ||
+    !!process.env.NEXTAUTH_URL
+  ) : undefined,
   pages: {
     signIn: '/sign-in',
     error: '/sign-in',
@@ -142,8 +147,8 @@ export const config = {
 
       // Check for session cart cookie
       if (!request.cookies.get('sessionCartId')) {
-        // Generate new session cart id cookie (compatible with AWS Amplify)
-        const sessionCartId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+        // Generate new session cart id cookie (compatible with AWS Amplify) - Cryptographically secure
+        const sessionCartId = crypto.randomUUID().replace(/-/g, '');
 
         // Clone the req headers
         const newRequestHeaders = new Headers(request.headers);

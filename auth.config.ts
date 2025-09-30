@@ -24,8 +24,8 @@ export const authConfig = {
 
       // Check for session cart cookie
       if (!request.cookies.get('sessionCartId')) {
-        // Generate new session cart id cookie (compatible with AWS Amplify)
-        const sessionCartId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+        // Generate new session cart id cookie (compatible with AWS Amplify) - Cryptographically secure
+        const sessionCartId = crypto.randomUUID().replace(/-/g, '');
 
         // Create new response and add the new headers
         const response = NextResponse.next({

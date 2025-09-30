@@ -5,7 +5,7 @@ import ProductPrice from './product-price';
 import { Product } from '@/types';
 import Rating from './rating';
 
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({ product, priority = false }: { product: Product; priority?: boolean }) => {
   return (
     <Card className='w-full max-w-sm'>
       <CardHeader className='p-0 items-center'>
@@ -15,7 +15,12 @@ const ProductCard = ({ product }: { product: Product }) => {
             alt={product.name}
             height={300}
             width={300}
-            priority={true}
+            priority={priority}
+            style={{
+              width: 'auto',
+              height: 'auto',
+              maxWidth: '100%',
+            }}
           />
         </Link>
       </CardHeader>

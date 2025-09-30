@@ -80,6 +80,10 @@ const DealCountdown = () => {
             alt="promotion"
             width={300}
             height={200}
+            style={{
+              width: 'auto',
+              height: 'auto',
+            }}
           />
         </div>
       </section>
@@ -114,6 +118,11 @@ const DealCountdown = () => {
           alt="promotion"
           width={300}
           height={200}
+          priority
+          style={{
+            width: 'auto',
+            height: 'auto',
+          }}
         />
       </div>
     </section>
