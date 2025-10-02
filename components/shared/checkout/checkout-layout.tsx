@@ -5,14 +5,13 @@ import CheckoutBreadcrumbs from "./checkout-breadcrumbs";
 import CheckoutNavigation from "./checkout-navigation";
 import { useCheckoutProgress } from "@/hooks/use-checkout-progress";
 import { Cart } from "@/types";
-import type { JsonValue } from '@prisma/client/runtime/library';
 
 interface CheckoutLayoutProps {
   children: React.ReactNode;
   user?: {
     id: string;
-    address?: JsonValue;
-    paymentMethod?: string | null;
+    address?: any;
+    paymentMethod?: string;
   } | null;
   cart?: Cart | null;
   showNavigation?: boolean;

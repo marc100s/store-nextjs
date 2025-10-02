@@ -76,8 +76,17 @@ export async function createOrder() {
         });
       }
 
-      // Don't clear cart here - keep it for the user to continue shopping
-      // Cart will be cleared when payment is successful
+      // Clear cart
+      await tx.cart.update({
+        where: { id: cart.id },
+        data: {
+          items: [],
+          totalPrice: 0,
+          taxPrice: 0,
+          shippingPrice: 0,
+          itemsPrice: 0,
+        },
+      });
       return insertedOrder.id;
     });
 
@@ -234,24 +243,6 @@ export async function updateOrderToPaid({
         paymentResult,
       },
     });
-
-    // Clear the user's cart after successful payment
-    const userCart = await tx.cart.findFirst({
-      where: { userId: order.userId }
-    });
-    
-    if (userCart) {
-      await tx.cart.update({
-        where: { id: userCart.id },
-        data: {
-          items: [],
-          totalPrice: 0,
-          taxPrice: 0,
-          shippingPrice: 0,
-          itemsPrice: 0,
-        },
-      });
-    }
   });
 
   // Get updated order after transaction

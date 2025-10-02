@@ -8,38 +8,29 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 const SuccessPage = async (props: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ payment_intent?: string; session_id?: string }>;
+  searchParams: Promise<{ payment_intent: string }>;
 }) => {
   const { id } = await props.params;
-  const { payment_intent: paymentIntentParam, session_id: sessionId } = await props.searchParams;
+  const { payment_intent: paymentIntentid } = await props.searchParams;
 
   // Fetch order
   const order = await getOrderById(id);
   if (!order) notFound();
 
-  // Determine payment intent id from either direct param or checkout session
-  let paymentIntentId = paymentIntentParam;
-  if (!paymentIntentId && sessionId) {
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-    paymentIntentId = typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id;
-  }
+  // retriev the payment intent
+  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentid);
 
-  if (!paymentIntentId) return redirect(`/order/${id}`);
-
-  // Retrieve the payment intent
-  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-
-  // Validate payment intent belongs to this order
+  // Check if paymentIntent is valid
   if (
     paymentIntent.metadata.orderId == null ||
     paymentIntent.metadata.orderId !== order.id.toString()
   ) {
     return notFound();
   }
+  // Check if oayment is succesful
+  const isSuccess = paymentIntent.status === "succeeded";
 
-  const isSuccess = paymentIntent.status === 'succeeded';
-  if (!isSuccess) return redirect(`/order/${id}`);
-
+  if (!isSuccess) return redirect(`/order/{id}`);
   return (
     <div className="max-w-4xl w-full mx-auto space-y-8">
       <div className="flex flex-col gap-6 items-center ">

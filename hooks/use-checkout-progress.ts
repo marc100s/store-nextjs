@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Cart } from "@/types";
-import type { JsonValue } from '@prisma/client/runtime/library';
 
 interface User {
   id: string;
-  address?: JsonValue;
-  paymentMethod?: string | null;
+  address?: any;
+  paymentMethod?: string;
 }
 
 interface CheckoutProgress {

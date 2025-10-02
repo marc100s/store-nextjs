@@ -3,13 +3,13 @@ import { NextResponse } from 'next/server';
 // Content Security Policy configuration
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com *.stripe.com https://www.paypal.com https://www.sandbox.paypal.com https://www.paypalobjects.com *.paypal.com *.uploadthing.com https://vercel.live;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' *.stripe.com *.paypal.com *.uploadthing.com https://vercel.live;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' https://fonts.gstatic.com data:;
   img-src 'self' data: https: blob:;
   media-src 'self' https:;
-  connect-src 'self' https://api.stripe.com https://checkout.stripe.com *.stripe.com https://m.stripe.network https://r.stripe.com https://api-m.sandbox.paypal.com https://api-m.paypal.com https://www.paypal.com https://www.sandbox.paypal.com https://www.paypalobjects.com *.paypal.com *.uploadthing.com https://api.resend.com wss://ws.pusher.com https://fonts.googleapis.com https://fonts.gstatic.com;
-  frame-src 'self' https://js.stripe.com https://checkout.stripe.com *.stripe.com https://www.paypal.com https://www.sandbox.paypal.com *.paypal.com;
+  connect-src 'self' *.stripe.com *.paypal.com *.uploadthing.com https://api.resend.com wss://ws.pusher.com;
+  frame-src 'self' *.stripe.com *.paypal.com;
   worker-src 'self' blob:;
   object-src 'none';
   base-uri 'self';
@@ -91,14 +91,10 @@ export function createSecureResponse(
 export function getEnvironmentSpecificHeaders(isDev: boolean, pathname?: string) {
   const headers: Record<string, string> = { ...securityHeaders };
   
-  // Special handling for Stripe/PayPal payment pages (order flow)
-  if (pathname && (pathname.startsWith('/order') || pathname.includes('/stripe-payment'))) {
-    headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=(), payment=* , usb=(), bluetooth=()';
-    headers['X-Frame-Options'] = 'SAMEORIGIN'; // Allow third-party iframes on our page
-    // Relax cross-origin isolation headers to avoid breaking Stripe/PayPal iframes
-    headers['Cross-Origin-Embedder-Policy'] = 'unsafe-none';
-    headers['Cross-Origin-Opener-Policy'] = 'same-origin-allow-popups';
-    headers['Cross-Origin-Resource-Policy'] = 'cross-origin';
+  // Special handling for Stripe payment pages
+  if (pathname && pathname.includes('/stripe-payment')) {
+    headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=(), payment=(self "https://*.stripe.com"), usb=(), bluetooth=()';
+    headers['X-Frame-Options'] = 'SAMEORIGIN'; // Allow Stripe iframes
   }
   
   if (isDev) {

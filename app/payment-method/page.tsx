@@ -35,7 +35,7 @@ const PaymentMethodPage = async () => {
         <div className="mb-8">
           <h1 className="text-2xl font-bold mb-2">Payment Method</h1>
           <p className="text-muted-foreground">
-            Choose how you&apos;d like to pay for your order.
+            Choose how you'd like to pay for your order.
           </p>
         </div>
         <PaymentMethodForm preferredPaymentMethod={user.paymentMethod} />

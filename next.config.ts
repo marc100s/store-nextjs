@@ -38,37 +38,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // More permissive headers for Stripe payment pages
-        source: '/order/:path*',
-        headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'payment=*, camera=(), microphone=(), geolocation=()',
-          },
-          {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'unsafe-none',
-          },
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin-allow-popups',
-          },
-          {
-            key: 'Cross-Origin-Resource-Policy',
-            value: 'cross-origin',
-          },
-        ],
-      },
-      {
-        source: '/((?!order).*)',
+        source: '/(.*)',
         headers: [
           {
             key: 'X-Content-Type-Options',
@@ -81,6 +51,31 @@ const nextConfig: NextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=()',
+          },
+        ],
+      },
+      {
+        // Allow more permissive policies for Stripe payment pages
+        source: '/order/:orderId',
+        has: [
+          {
+            type: 'query',
+            key: 'payment',
+            value: 'stripe'
+          }
+        ],
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), payment=(self "https://*.stripe.com"), usb=(), bluetooth=()',
           },
         ],
       },
