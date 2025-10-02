@@ -39,21 +39,26 @@ const ShippingAddressForm = ({
   const onSubmit: SubmitHandler<z.infer<typeof shippingAddressSchema>> = async (data) => {
     startTransition(() => {
       // Perform synchronous operations here
-      toast({ title: 'Updating address...' });
+      toast({ 
+        title: 'Updating address...', 
+        duration: 2000 // Auto-dismiss after 2 seconds
+      });
       
       // Return a promise that resolves when all async operations are complete
       return new Promise<void>((resolve) => {
         setTimeout(async () => {
           try {
             await updateUserAddress(data);
-            toast({ title: 'Address updated successfully' });
+            // Remove the persistent success toast - just navigate
             router.push('/payment-method');
             resolve();
           } catch (error: unknown) {
             console.error('Update address error:', error);
             toast({
               title: 'Failed to update address',
-              description: (error as Error)?.message || 'An unexpected error occurred'
+              description: (error as Error)?.message || 'An unexpected error occurred',
+              variant: 'destructive',
+              duration: 5000 // Show error longer
             });
           }
         }, 0); // Use setTimeout with 0ms delay to allow for any pending async operations

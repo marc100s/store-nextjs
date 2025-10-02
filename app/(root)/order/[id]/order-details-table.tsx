@@ -191,7 +191,7 @@ const OrderDetailsTable = ({
                     <TableRow key={item.slug}>
                       <TableCell>
                         <Link
-                          href={`/product/{item.slug}`}
+                          href={`/product/${item.slug}`}
                           className='flex items-center'
                         >
                           <Image
@@ -250,14 +250,21 @@ const OrderDetailsTable = ({
               )}
 
               {/* Stripe Payment */}
-              {
-                !isPaid && paymentMethod === 'Stripe' && stripeClientSecret && (
+              {!isPaid && paymentMethod === 'Stripe' && (
+                stripeClientSecret ? (
                   <StripePayment
-                  priceInCents={Number(order.totalPrice) * 100}
-                  orderId={order.id}
-                  clientSecret={stripeClientSecret}
+                    key={`stripe-${order.id}-${stripeClientSecret.slice(-8)}`}
+                    priceInCents={Number(order.totalPrice) * 100}
+                    orderId={order.id}
+                    clientSecret={stripeClientSecret}
                   />
-                )}
+                ) : (
+                  <div className="text-destructive p-4 border border-destructive rounded">
+                    <p>Unable to initialize Stripe payment.</p>
+                    <p className="text-sm mt-2">Please refresh the page and try again, or contact support if the issue persists.</p>
+                  </div>
+                )
+              )}
 
               {/* Cash On Delivery */}
               {isAdmin && !isPaid && paymentMethod === 'CashOnDelivery' && (

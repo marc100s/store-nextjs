@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm, ControllerRenderProps } from "react-hook-form";
+import { useForm, ControllerRenderProps } from "react-hook-form";
 import { ShippingAddress, Cart } from "@/types";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTransition } from "react";
 import { updateUserAddress } from "@/lib/actions/user.actions";
 import CheckoutLayout from "@/components/shared/checkout/checkout-layout";
+import type { JsonValue } from '@prisma/client/runtime/library';
 import {
   Form,
   FormControl,
@@ -25,8 +26,8 @@ import { Input } from "@/components/ui/input";
 interface ShippingAddressClientProps {
   user: {
     id: string;
-    address?: any;
-    paymentMethod?: string;
+    address?: JsonValue;
+    paymentMethod?: string | null;
   };
   cart: Cart;
   address: ShippingAddress | null;
@@ -39,7 +40,7 @@ export default function ShippingAddressClient({
 }: ShippingAddressClientProps) {
   const router = useRouter();
   const { toast } = useToast();
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [isUpdating, setIsUpdating] = useState(false);
 
   const form = useForm<z.infer<typeof shippingAddressSchema>>({

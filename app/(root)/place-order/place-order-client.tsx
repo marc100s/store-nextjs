@@ -18,12 +18,13 @@ import {
 import Image from "next/image";
 import { formatCurrency } from "@/lib/utils";
 import { ShippingAddress, CartItem, Cart } from "@/types";
+import type { JsonValue } from '@prisma/client/runtime/library';
 
 interface PlaceOrderClientProps {
   user: {
     id: string;
-    address?: any;
-    paymentMethod?: string;
+    address?: JsonValue;
+    paymentMethod?: string | null;
   };
   cart: Cart;
   userAddress: ShippingAddress;

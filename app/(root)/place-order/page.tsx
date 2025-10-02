@@ -1,23 +1,9 @@
 import { auth } from "@/auth";
 import { getMyCart } from "@/lib/actions/cart.actions";
 import { getUserById } from "@/lib/actions/user.actions";
-import { ShippingAddress, CartItem } from "@/types";
+import { ShippingAddress } from "@/types";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import CheckoutLayout from "@/components/shared/checkout/checkout-layout";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import Image from "next/image";
-import { formatCurrency } from "@/lib/utils";
 import PlaceOrderClient from "./place-order-client";
 
 export const metadata: Metadata = {
