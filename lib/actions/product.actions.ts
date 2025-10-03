@@ -51,12 +51,19 @@ export async function getAllProducts({
   rating?: string;
   sort?: string;
 }) {
+  // Sanitize and validate pagination inputs
+  const safeLimit = Math.min(Math.max(1, limit || PAGE_SIZE), 100); // Between 1-100
+  const safePage = Math.max(1, page || 1); // Minimum page 1
+  
+  // Sanitize query input (max 100 chars, trim whitespace)
+  const sanitizedQuery = query?.trim().slice(0, 100) || '';
+  
   // Query filter
   const queryFilter: Prisma.ProductWhereInput =
-    query && query !== 'all'
+    sanitizedQuery && sanitizedQuery !== 'all'
       ? {
           name: {
-            contains: query,
+            contains: sanitizedQuery,
             mode: 'insensitive',
           } as Prisma.StringFilter,
         }
@@ -101,8 +108,8 @@ export async function getAllProducts({
         : sort === 'rating'
         ? { rating: 'desc' }
         : { createdAt: 'desc' },
-    skip: (page - 1) * limit,
-    take: limit,
+    skip: (safePage - 1) * safeLimit,
+    take: safeLimit,
   });
 
   const dataCount = await prisma.product.count();

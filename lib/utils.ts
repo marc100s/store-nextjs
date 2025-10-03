@@ -14,7 +14,7 @@ export function convertToPlainObject<T>(value: T): T {
 
 // Format number with decimal places 
 export function formatNumberWithDecimal(num: number): string {
-  const [int, decimal] =num.toString().split('.');
+  const [int, decimal] = num.toString().split('.');
   return decimal ? `${int}${decimal.padEnd(2, '0')}` : `${int}.00`;
 }
 
@@ -52,7 +52,7 @@ export function round2(value: number | string) {
   } else if (typeof value === 'string') {
     return Math.round((Number(value) + Number.EPSILON) * 100 / 100);
   } else {
-    throw new Error('alue is not a number or string');
+    throw new Error('value is not a number or string');
   }
 }
 
