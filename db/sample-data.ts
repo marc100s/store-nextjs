@@ -5,7 +5,7 @@ const sampleData = {
     {
       name: "John Doe",
       email: "john@example.com",
-      password: hashSync("123456", 10),
+      password: hashSync("12345678", 10),
       role: "admin",
       address: {
         street: "123 Main St",
@@ -18,7 +18,7 @@ const sampleData = {
     {
       name: "Jane Doe",
       email: "jane@example.com",
-      password: hashSync("123456", 10),
+      password: hashSync("12345678", 10),
       role: "user",
       address: {
         street: "456 Brooklyn St",
@@ -45,7 +45,7 @@ const sampleData = {
       numReviews: 10,
       stock: 5,
       isFeatured: true,
-      banner: "banner-1.jpg",
+      banner: "/images/sample-products/banner-1.jpg",
     },
     {
       name: "Brooks Brothers Long Sleeved Shirt",
@@ -62,7 +62,7 @@ const sampleData = {
       numReviews: 8,
       stock: 10,
       isFeatured: true,
-      banner: "banner-2.jpg",
+      banner: "/images/sample-products/banner-2.jpg",
     },
     {
       name: "Tommy Hilfiger Classic Fit Dress Shirt",

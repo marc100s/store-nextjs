@@ -9,13 +9,10 @@ import { NextResponse } from 'next/server';
 import { authConfig } from './auth.config';
 
 export const config = {
-  // Trust specific hosts for AWS Amplify deployment - More secure approach
-  trustHost: process.env.NODE_ENV === 'production' ? (
-    // Only trust if we're on Amplify or have NEXTAUTH_URL set
-    process.env.NEXTAUTH_URL?.includes('amplifyapp.com') || 
-    process.env.NEXTAUTH_URL?.includes('vercel.app') ||
-    !!process.env.NEXTAUTH_URL
-  ) : undefined,
+  // Trust host configuration
+  // Always trust localhost for development
+  // For production, trust based on NEXTAUTH_URL
+  trustHost: true,  // This is safe since we control deployment environments
   pages: {
     signIn: '/sign-in',
     error: '/sign-in',

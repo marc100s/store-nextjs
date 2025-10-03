@@ -9,7 +9,21 @@ export const LATEST_PRODUCTS_LIMIT =
 
   export const signInDefaultValues = {
     email: 'john@example.com',
-    password: '123456',
+    password: '12345678',
+  };
+
+  // Development test accounts (matches sample-data.ts)
+  export const TEST_ACCOUNTS = {
+    admin: {
+      email: 'john@example.com',
+      password: '12345678',
+      role: 'admin'
+    },
+    user: {
+      email: 'jane@example.com', 
+      password: '12345678',
+      role: 'user'
+    }
   };
 
   export const signUpDefaultValues = {
