@@ -8,7 +8,6 @@
   "prebuild": "prisma generate",
   "build": "prisma generate && next build",
   "start": "next start",
-  "vercel-build": "pnpm run build",  
   "postinstall": "prisma generate",
   "db:push": "prisma db push",
   "db:seed": "prisma db seed",
