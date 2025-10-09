@@ -3,16 +3,16 @@
  * Implements query result caching and database performance optimizations
  */
 
-import { LRUCache } from 'lru-cache';
-import { prisma } from '@/db/prisma';
-import crypto from 'crypto';
+import { LRUCache } from "lru-cache";
+import { prisma } from "@/db/prisma";
+import crypto from "crypto";
 
 // Cache configuration
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes default TTL
 const MAX_CACHE_SIZE = 100; // Maximum number of cached items
 
 // Create LRU cache instance
-const queryCache = new LRUCache<string, unknown>({
+const queryCache = new LRUCache<string, any>({
   max: MAX_CACHE_SIZE,
   ttl: CACHE_TTL,
   updateAgeOnGet: true,
@@ -23,11 +23,13 @@ const queryCache = new LRUCache<string, unknown>({
  * Generate cache key from query parameters
  */
 function generateCacheKey(queryName: string, params: unknown): string {
-  const sortedParams = JSON.stringify(params, Object.keys(params).sort());
+  const paramObj =
+    typeof params === "object" && params !== null ? (params as object) : {};
+  const sortedParams = JSON.stringify(paramObj, Object.keys(paramObj).sort());
   const hash = crypto
-    .createHash('sha256')
+    .createHash("sha256")
     .update(`${queryName}:${sortedParams}`)
-    .digest('hex');
+    .digest("hex");
   return hash;
 }
 
@@ -45,26 +47,26 @@ export async function cachedQuery<T>(
   } = {}
 ): Promise<T> {
   // Skip cache if requested or in development
-  if (options.skipCache || process.env.NODE_ENV === 'development') {
+  if (options.skipCache || process.env.NODE_ENV === "development") {
     return queryFn();
   }
 
   const cacheKey = generateCacheKey(queryName, options.params || {});
-  
+
   // Check cache
   const cached = queryCache.get(cacheKey);
   if (cached !== undefined) {
     console.log(`[Cache] Hit: ${queryName}`);
-    return cached;
+    return cached as T;
   }
 
   // Execute query
   console.log(`[Cache] Miss: ${queryName}`);
   const result = await queryFn();
-  
+
   // Store in cache
   queryCache.set(cacheKey, result, { ttl: options.ttl || CACHE_TTL });
-  
+
   return result;
 }
 
@@ -74,7 +76,7 @@ export async function cachedQuery<T>(
 export function invalidateCache(patterns: string[]): void {
   const keys = Array.from(queryCache.keys());
   let invalidated = 0;
-  
+
   for (const pattern of patterns) {
     for (const key of keys) {
       if (key.includes(pattern)) {
@@ -83,7 +85,7 @@ export function invalidateCache(patterns: string[]): void {
       }
     }
   }
-  
+
   console.log(`[Cache] Invalidated ${invalidated} entries`);
 }
 
@@ -92,7 +94,7 @@ export function invalidateCache(patterns: string[]): void {
  */
 export function clearCache(): void {
   queryCache.clear();
-  console.log('[Cache] Cleared all entries');
+  console.log("[Cache] Cleared all entries");
 }
 
 /**
@@ -115,13 +117,13 @@ export async function batchQuery<T, U>(
   queryFn: (batch: U[]) => Promise<T[]>
 ): Promise<T[]> {
   const results: T[] = [];
-  
+
   for (let i = 0; i < items.length; i += batchSize) {
     const batch = items.slice(i, i + batchSize);
     const batchResults = await queryFn(batch);
     results.push(...batchResults);
   }
-  
+
   return results;
 }
 
@@ -134,11 +136,11 @@ export async function checkDatabaseHealth(): Promise<{
   error?: string;
 }> {
   const start = Date.now();
-  
+
   try {
     await prisma.$queryRaw`SELECT 1`;
     const latency = Date.now() - start;
-    
+
     return {
       isHealthy: true,
       latency,
@@ -147,7 +149,7 @@ export async function checkDatabaseHealth(): Promise<{
     return {
       isHealthy: false,
       latency: Date.now() - start,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -156,30 +158,35 @@ export async function checkDatabaseHealth(): Promise<{
  * Query performance monitor
  */
 export class QueryPerformanceMonitor {
-  private metrics: Map<string, {
-    count: number;
-    totalTime: number;
-    avgTime: number;
-    maxTime: number;
-    minTime: number;
-  }> = new Map();
+  private metrics: Map<
+    string,
+    {
+      count: number;
+      totalTime: number;
+      avgTime: number;
+      maxTime: number;
+      minTime: number;
+    }
+  > = new Map();
 
   async measureQuery<T>(
     queryName: string,
     queryFn: () => Promise<T>
   ): Promise<T> {
     const start = Date.now();
-    
+
     try {
       const result = await queryFn();
       const duration = Date.now() - start;
-      
+
       this.recordMetric(queryName, duration);
-      
+
       if (duration > 1000) {
-        console.warn(`[Performance] Slow query detected: ${queryName} took ${duration}ms`);
+        console.warn(
+          `[Performance] Slow query detected: ${queryName} took ${duration}ms`
+        );
       }
-      
+
       return result;
     } catch (error) {
       const duration = Date.now() - start;
@@ -196,13 +203,13 @@ export class QueryPerformanceMonitor {
       maxTime: 0,
       minTime: Infinity,
     };
-    
+
     existing.count++;
     existing.totalTime += duration;
     existing.avgTime = existing.totalTime / existing.count;
     existing.maxTime = Math.max(existing.maxTime, duration);
     existing.minTime = Math.min(existing.minTime, duration);
-    
+
     this.metrics.set(queryName, existing);
   }
 
@@ -225,7 +232,7 @@ export interface PaginationOptions {
   page: number;
   limit: number;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 export interface PaginatedResult<T> {
@@ -258,7 +265,7 @@ export async function paginate<T>(
   const page = Math.max(1, options.page);
   const limit = Math.min(100, Math.max(1, options.limit));
   const skip = (page - 1) * limit;
-  
+
   // Execute count and data queries in parallel
   const [total, data] = await Promise.all([
     model.count({ where }),
@@ -267,15 +274,15 @@ export async function paginate<T>(
       skip,
       take: limit,
       orderBy: options.sortBy
-        ? { [options.sortBy]: options.sortOrder || 'asc' }
+        ? { [options.sortBy]: options.sortOrder || "asc" }
         : undefined,
     }),
   ]);
-  
+
   const totalPages = Math.ceil(total / limit);
-  
+
   return {
-      data: data as T[],
+    data: data as T[],
     pagination: {
       page,
       limit,
@@ -305,28 +312,34 @@ export async function withRetry<T>(
 ): Promise<T> {
   const maxRetries = options.maxRetries || 3;
   const retryDelay = options.retryDelay || 1000;
-  const shouldRetry = options.shouldRetry || ((error) => {
-    // Retry on connection errors or deadlocks
-    return error.code === 'P1001' || error.code === 'P1008';
-  });
-  
-  let lastError: Error | RetryableError;
-  
+  const shouldRetry =
+    options.shouldRetry ||
+    ((error) => {
+      // Retry on connection errors or deadlocks
+      return error.code === "P1001" || error.code === "P1008";
+    });
+
+  let lastError: Error | RetryableError = new Error(
+    "Max retries reached and no error was thrown"
+  );
+
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
     } catch (error) {
-      lastError = error;
-      
-      if (i < maxRetries - 1 && shouldRetry(error)) {
+      lastError = error as Error | RetryableError;
+
+      if (i < maxRetries - 1 && shouldRetry(error as RetryableError)) {
         console.log(`[DB] Retry attempt ${i + 1} after ${retryDelay}ms`);
-        await new Promise(resolve => setTimeout(resolve, retryDelay * (i + 1)));
+        await new Promise((resolve) =>
+          setTimeout(resolve, retryDelay * (i + 1))
+        );
       } else {
         break;
       }
     }
   }
-  
+
   throw lastError;
 }
 
@@ -395,26 +408,26 @@ export function withCache(
 ) {
   return async (req: ApiRequest, res: ApiResponse) => {
     const cacheKey = options.key || `${req.method}:${req.url}`;
-    
+
     // Check cache for GET requests
-    if (req.method === 'GET') {
+    if (req.method === "GET") {
       const cached = queryCache.get(cacheKey);
       if (cached) {
         console.log(`[API Cache] Hit: ${cacheKey}`);
         return res.status(200).json(cached);
       }
     }
-    
+
     // Wrap original handler
     const originalJson = res.json;
-    res.json = function(data: unknown) {
+    res.json = function (data: unknown) {
       // Cache successful responses
-      if (res.statusCode === 200 && req.method === 'GET') {
+      if (res.statusCode === 200 && req.method === "GET") {
         queryCache.set(cacheKey, data, { ttl: options.ttl || CACHE_TTL });
       }
       return originalJson.call(this, data);
     };
-    
+
     return handler(req, res);
   };
 }

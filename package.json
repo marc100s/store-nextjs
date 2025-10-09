@@ -2,17 +2,24 @@
   "name": "prostore",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
+ "scripts": {  
   "dev": "next dev",
   "dev:https": "cp .env.https .env && next dev --experimental-https --experimental-https-key ./localhost+2-key.pem --experimental-https-cert ./localhost+2.pem",
   "build": "prisma generate && next build",
   "start": "next start",
-  "lint": "next lint",
+  "vercel-build": "pnpm run build",  
   "postinstall": "prisma generate",
+  "db:push": "prisma db push",
+  "db:seed": "prisma db seed",
+  "db:migrate": "prisma migrate deploy",
+  "lint": "next lint",
   "test": "jest",
-  "test:watch": "jest --watch",
-  "email": "cp .env ./node_modules/react-email && email dev --dir email --port 3001",
+  "test:watch": "jest --watch", 
+  "email": "cp .env ./node_modules/react-email && email dev --dir email --port 3001",  
   "packageManager": "pnpm@7.5.1"
+},
+"prisma": {
+  "seed": "ts-node --esm db/seed.ts"
 },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.0",
@@ -53,7 +60,6 @@
     "next-auth": "5.0.0-beta.29",
     "next-themes": "^0.4.6",
     "postcss": "^8.5.6",
-    "prisma": "6.17.0",
     "query-string": "^9.3.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -85,7 +91,7 @@
     "eslint": "^9.37.0",
     "eslint-config-next": "15.5.3",
     "jest": "^29.7.0",
-    "prisma": "6.16.3",
+    "prisma": "6.17.0",
     "ts-jest": "^29.4.4",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
