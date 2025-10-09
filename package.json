@@ -5,6 +5,7 @@
  "scripts": {  
   "dev": "next dev",
   "dev:https": "cp .env.https .env && next dev --experimental-https --experimental-https-key ./localhost+2-key.pem --experimental-https-cert ./localhost+2.pem",
+  "prebuild": "prisma generate",
   "build": "prisma generate && next build",
   "start": "next start",
   "vercel-build": "pnpm run build",  
@@ -17,9 +18,6 @@
   "test:watch": "jest --watch", 
   "email": "cp .env ./node_modules/react-email && email dev --dir email --port 3001",  
   "packageManager": "pnpm@7.5.1"
-},
-"prisma": {
-  "seed": "ts-node --esm db/seed.ts"
 },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.0",
@@ -80,7 +78,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
-    "@prisma/client": "6.16.3",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.19.19",
     "@types/react": "^19.2.2",

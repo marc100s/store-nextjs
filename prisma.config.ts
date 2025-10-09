@@ -1,7 +1,9 @@
-// prisma.config.ts
 import { defineConfig } from "@prisma/config";
 
 export default defineConfig({
-  schema: "./prisma/schema.prisma",
-  seed: "ts-node prisma/seed.ts",
+  seed: {
+    run: async () => {
+      await import("./db/seed");
+    },
+  },
 });
