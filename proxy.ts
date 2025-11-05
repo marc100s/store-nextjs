@@ -5,7 +5,7 @@ import { applySecurityHeaders, getEnvironmentSpecificHeaders } from './lib/secur
 
 const { auth } = NextAuth(authConfig);
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Apply authentication middleware first
   const authResult = await auth(request as any);
   
