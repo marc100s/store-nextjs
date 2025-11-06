@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 // Content Security Policy configuration
 const ContentSecurityPolicy = `
@@ -16,48 +17,51 @@ const ContentSecurityPolicy = `
   form-action 'self' *.stripe.com *.paypal.com;
   frame-ancestors 'none';
   upgrade-insecure-requests;
-`.replace(/\s{2,}/g, ' ').trim();
+`
+  .replace(/\s{2,}/g, " ")
+  .trim();
 
 // Security headers configuration
 export const securityHeaders = {
   // Content Security Policy
-  'Content-Security-Policy': ContentSecurityPolicy,
-  
+  "Content-Security-Policy": ContentSecurityPolicy,
+
   // Referrer Policy
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
-  
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+
   // Permissions Policy (formerly Feature Policy)
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=()',
-  
+  "Permissions-Policy":
+    "camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=()",
+
   // X-Content-Type-Options
-  'X-Content-Type-Options': 'nosniff',
-  
+  "X-Content-Type-Options": "nosniff",
+
   // X-Frame-Options (defense in depth with CSP frame-ancestors)
-  'X-Frame-Options': 'DENY',
-  
+  "X-Frame-Options": "DENY",
+
   // X-XSS-Protection (legacy browsers)
-  'X-XSS-Protection': '1; mode=block',
-  
+  "X-XSS-Protection": "1; mode=block",
+
   // Strict-Transport-Security (HSTS)
-  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-  
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+
   // X-DNS-Prefetch-Control
-  'X-DNS-Prefetch-Control': 'off',
-  
+  "X-DNS-Prefetch-Control": "off",
+
   // Cross-Origin-Embedder-Policy
-  'Cross-Origin-Embedder-Policy': 'credentialless',
-  
+  "Cross-Origin-Embedder-Policy": "credentialless",
+
   // Cross-Origin-Opener-Policy
-  'Cross-Origin-Opener-Policy': 'same-origin',
-  
+  "Cross-Origin-Opener-Policy": "same-origin",
+
   // Cross-Origin-Resource-Policy
-  'Cross-Origin-Resource-Policy': 'same-origin',
-  
+  "Cross-Origin-Resource-Policy": "same-origin",
+
   // Server header hiding
-  'Server': 'Prostore',
-  
+  Server: "Prostore",
+
   // Powered by header removal (handled by Next.js config)
-  'X-Powered-By': '',
+  "X-Powered-By": "",
 };
 
 // Apply security headers to response
@@ -70,47 +74,128 @@ export function applySecurityHeaders(response: NextResponse): NextResponse {
       response.headers.delete(key);
     }
   });
-  
+
   return response;
 }
 
 // Create security headers for API responses
 export function createSecureResponse(
-  data: unknown, 
+  data: unknown,
   options: { status?: number; headers?: Record<string, string> } = {}
 ): NextResponse {
   const response = NextResponse.json(data, {
     status: options.status || 200,
     headers: options.headers,
   });
-  
+
   return applySecurityHeaders(response);
 }
 
 // Security headers for development vs production
-export function getEnvironmentSpecificHeaders(isDev: boolean, pathname?: string) {
+export function getEnvironmentSpecificHeaders(
+  isDev: boolean,
+  pathname?: string
+) {
   const headers: Record<string, string> = { ...securityHeaders };
-  
+
   // Special handling for Stripe payment pages
-  if (pathname && pathname.includes('/stripe-payment')) {
-    headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=(), payment=(self "https://*.stripe.com"), usb=(), bluetooth=()';
-    headers['X-Frame-Options'] = 'SAMEORIGIN'; // Allow Stripe iframes
+  if (pathname?.includes("/stripe-payment")) {
+    headers["Permissions-Policy"] =
+      'camera=(), microphone=(), geolocation=(), payment=(self "https://*.stripe.com"), usb=(), bluetooth=()';
+    headers["X-Frame-Options"] = "SAMEORIGIN"; // Allow Stripe iframes
   }
-  
+
   if (isDev) {
     // Relax CSP for development
-    headers['Content-Security-Policy'] = headers['Content-Security-Policy']
+    headers["Content-Security-Policy"] = headers["Content-Security-Policy"]
       .replace("'unsafe-eval'", "'unsafe-eval'")
       .replace("'unsafe-inline'", "'unsafe-inline'");
-    
+
     // Allow payment API in development
-    headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=(), payment=*, usb=(), bluetooth=()';
-    
+    headers["Permissions-Policy"] =
+      "camera=(), microphone=(), geolocation=(), payment=*, usb=(), bluetooth=()";
+
     // Remove HSTS in development
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { 'Strict-Transport-Security': _, ...devHeaders } = headers;
+    const { "Strict-Transport-Security": _, ...devHeaders } = headers;
     return devHeaders;
   }
-  
+
   return headers;
+}
+
+/**
+ * Enhanced bot detection and protection
+ */
+export function isBot(request: NextRequest): boolean {
+  const userAgent = request.headers.get("user-agent")?.toLowerCase() || "";
+
+  const botPatterns = [
+    "bot",
+    "crawler",
+    "spider",
+    "scraper",
+    "curl",
+    "wget",
+    "python",
+    "java",
+    "googlebot",
+    "bingbot",
+    "slurp",
+    "duckduckbot",
+    "baiduspider",
+    "yandexbot",
+    "facebookexternalhit",
+    "twitterbot",
+    "linkedinbot",
+    "whatsapp",
+    "telegram",
+  ];
+
+  return botPatterns.some((pattern) => userAgent.includes(pattern));
+}
+
+/**
+ * Apply bot protection to sensitive routes
+ */
+export function botProtection(request: NextRequest): NextResponse | null {
+  if (isBot(request)) {
+    const pathname = request.nextUrl.pathname;
+
+    // Allow bots on public pages
+    const allowedPaths = [
+      "/",
+      "/product/",
+      "/search",
+      "/api/webhooks", // Allow webhook access
+      "/sitemap.xml",
+      "/robots.txt",
+    ];
+
+    const isAllowed = allowedPaths.some((path) => pathname.startsWith(path));
+
+    if (!isAllowed) {
+      return createSecureResponse({ error: "Access denied" }, { status: 403 });
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Check if request should have enhanced security applied
+ */
+export function shouldApplyEnhancedSecurity(pathname: string): boolean {
+  const sensitiveRoutes = [
+    /^\/admin/,
+    /^\/user/,
+    /^\/api(?!\/webhooks)/, // All API routes except webhooks
+    /^\/shipping-address/,
+    /^\/payment-method/,
+    /^\/place-order/,
+    /^\/order/,
+    /^\/profile/,
+  ];
+
+  return sensitiveRoutes.some((pattern) => pattern.test(pathname));
 }

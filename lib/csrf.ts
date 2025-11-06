@@ -3,20 +3,20 @@
  * Implements double-submit cookie pattern for CSRF protection
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
+import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 
 // CSRF token configuration
 const CSRF_TOKEN_LENGTH = 32;
-const CSRF_COOKIE_NAME = '__Host-csrf-token';
-const CSRF_HEADER_NAME = 'x-csrf-token';
-const CSRF_FORM_FIELD = '_csrf';
+const CSRF_COOKIE_NAME = "__Host-csrf-token";
+const CSRF_HEADER_NAME = "x-csrf-token";
+const CSRF_FORM_FIELD = "_csrf";
 
 /**
  * Generate a cryptographically secure CSRF token
  */
 export function generateCSRFToken(): string {
-  return crypto.randomBytes(CSRF_TOKEN_LENGTH).toString('hex');
+  return crypto.randomBytes(CSRF_TOKEN_LENGTH).toString("hex");
 }
 
 /**
@@ -31,16 +31,13 @@ export function verifyCSRFToken(
   // Get token from header or body
   const headerToken = request.headers.get(CSRF_HEADER_NAME);
   const bodyToken = request.nextUrl.searchParams.get(CSRF_FORM_FIELD);
-  
+
   const requestToken = headerToken || bodyToken;
-  
+
   if (!requestToken) return false;
 
   // Constant-time comparison to prevent timing attacks
-  return crypto.timingSafeEqual(
-    Buffer.from(token),
-    Buffer.from(requestToken)
-  );
+  return crypto.timingSafeEqual(Buffer.from(token), Buffer.from(requestToken));
 }
 
 /**
@@ -51,25 +48,25 @@ export async function csrfProtection(
   next: () => Promise<NextResponse>
 ): Promise<NextResponse> {
   const method = request.method;
-  
+
   // Skip CSRF check for safe methods
-  if (['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+  if (["GET", "HEAD", "OPTIONS"].includes(method)) {
     return next();
   }
 
   // Get CSRF token from cookie
   const csrfCookie = request.cookies.get(CSRF_COOKIE_NAME);
-  
+
   // Verify token for state-changing methods
-  if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+  if (["POST", "PUT", "DELETE", "PATCH"].includes(method)) {
     if (!verifyCSRFToken(request, csrfCookie?.value || null)) {
       return NextResponse.json(
-        { error: 'Invalid CSRF token' },
-        { 
+        { error: "Invalid CSRF token" },
+        {
           status: 403,
           headers: {
-            'Content-Type': 'application/json',
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
     }
@@ -77,58 +74,83 @@ export async function csrfProtection(
 
   // Generate new token if not exists
   const response = await next();
-  
+
   if (!csrfCookie) {
     const newToken = generateCSRFToken();
     response.cookies.set(CSRF_COOKIE_NAME, newToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
       maxAge: 60 * 60 * 24, // 24 hours
     });
-    
+
     // Add token to response header for client to use
-    response.headers.set('X-CSRF-Token', newToken);
+    response.headers.set("X-CSRF-Token", newToken);
   }
 
   return response;
 }
 
 /**
- * Get CSRF token from browser (not a React hook)
+ * Get CSRF token from browser (for client-side use)
+ * Since cookie is httpOnly, we get token from meta tag or API endpoint
  */
 export function getCSRFToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  
-  // Get token from cookie
-  const cookies = document.cookie.split(';');
-  const csrfCookie = cookies.find(c => c.trim().startsWith(CSRF_COOKIE_NAME));
-  
-  if (csrfCookie) {
-    return csrfCookie.split('=')[1];
-  }
-  
-  // Get token from meta tag (if server-rendered)
+  if (typeof window === "undefined") return null;
+
+  // First try to get from meta tag (preferred for SSR)
   const metaTag = document.querySelector('meta[name="csrf-token"]');
-  return metaTag?.getAttribute('content') || null;
+  if (metaTag) {
+    return metaTag.getAttribute("content");
+  }
+
+  // Fallback: Note that httpOnly cookie cannot be read by JS
+  // Token should be provided via server-side rendering or API endpoint
+  return null;
+}
+
+/**
+ * Fetch CSRF token from API endpoint (for client-side apps)
+ */
+export async function fetchCSRFToken(): Promise<string | null> {
+  try {
+    const response = await fetch("/api/csrf-token", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.csrfToken;
+    }
+  } catch (error) {
+    console.warn("Failed to fetch CSRF token:", error);
+  }
+
+  return null;
 }
 
 /**
  * Helper to add CSRF token to fetch requests
  */
-export function fetchWithCSRF(
+export async function fetchWithCSRF(
   url: string,
   options: RequestInit = {}
 ): Promise<Response> {
-  const token = getCSRFToken();
-  
+  let token = getCSRFToken();
+
+  // If no token from meta tag, try to fetch it
+  if (!token) {
+    token = await fetchCSRFToken();
+  }
+
   if (token) {
     options.headers = {
       ...options.headers,
       [CSRF_HEADER_NAME]: token,
     };
   }
-  
+
   return fetch(url, options);
 }
