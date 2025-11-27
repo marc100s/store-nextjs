@@ -1,5 +1,6 @@
-import { z } from "zod";
-import {
+// biome-ignore assist/source/organizeImports: <false positive>
+import type { z } from "zod";
+import type {
   insertProductSchema,
   insertCartSchema,
   cartItemSchema,
@@ -8,7 +9,7 @@ import {
   insertOrderSchema,
   paymentResultSchema,
   insertReviewSchema,
-} from '@/lib/validators';
+} from "@/lib/validators";
 
 export type Product = z.infer<typeof insertProductSchema> & {
   id: string;
@@ -33,11 +34,10 @@ export type Order = z.infer<typeof insertOrderSchema> & {
   paymentResult: PaymentResult;
 };
 
-export type PaymentResult = z.infer<typeof paymentResultSchema>
+export type PaymentResult = z.infer<typeof paymentResultSchema>;
 
 export type Review = z.infer<typeof insertReviewSchema> & {
   id: string;
   createdAt: Date;
-  user?: { name:string};
-
-}
+  user?: { name: string };
+};

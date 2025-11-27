@@ -3,7 +3,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/db/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt-ts-edge";
-import type { NextAuthConfig } from "next-auth";
+import type { NextAuthConfig, Session, User } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import { cookies } from "next/headers";
 import { authConfig } from "./auth.config";
 
@@ -38,7 +39,7 @@ export const config = {
         });
 
         // Check if user exists and if the password matches
-        if (user && user.password) {
+        if (user?.password) {
           const isMatch = await compare(
             credentials.password as string,
             user.password
@@ -61,28 +62,49 @@ export const config = {
   ],
   callbacks: {
     ...authConfig.callbacks,
-    async session({ session, user, trigger, token }: any) {
+    async session({
+      session,
+      trigger,
+      token,
+    }: {
+      session: Session;
+      user?: User;
+      trigger?: "update";
+      token: JWT;
+    }) {
       // Set the user ID from the token
-      session.user.id = token.sub;
-      session.user.role = token.role;
-      session.user.name = token.name;
+      session.user.id = token.sub as string;
+      session.user.role = token.role as string;
+      session.user.name = token.name as string;
 
       // If there is an update, set the user name
       if (trigger === "update") {
-        session.user.name = user.name;
+        session.user.name = token.name as string;
       }
 
       return session;
     },
-    async jwt({ token, user, trigger, session }: any) {
+    async jwt({
+      token,
+      user,
+      trigger,
+      session,
+    }: {
+      token: JWT;
+      user?: User;
+      trigger?: "signIn" | "signUp" | "update";
+      session?: Session;
+    }) {
       // Assign user fields to token
       if (user) {
         token.id = user.id;
         token.role = user.role;
 
         // If user has no name then use the email
-        if (user.name === "NO_NAME") {
-          token.name = user.email!.split("@")[0];
+        /* This condition `if (user.name === "NO_NAME" && user.email)` is checking if the user's name
+        is set to "NO_NAME" and if the user has an email address. */
+        if (user.name === "NO_NAME" && user.email) {
+          token.name = user.email.split("@")[0];
 
           // Update database to reflect the token name
           await prisma.user.update({
@@ -123,7 +145,13 @@ export const config = {
 
       return token;
     },
-    authorized({ request, auth }: any) {
+    authorized({
+      request,
+      auth,
+    }: {
+      request: { nextUrl: { pathname: string } };
+      auth: Session | null;
+    }) {
       // Array of regex patterns of paths we want to protect
       const protectedPaths = [
         /\/shipping-address/,
