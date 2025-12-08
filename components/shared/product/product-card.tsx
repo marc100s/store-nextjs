@@ -9,18 +9,14 @@ const ProductCard = ({ product, priority = false }: { product: Product; priority
   return (
     <Card className='w-full max-w-sm'>
       <CardHeader className='p-0 items-center'>
-        <Link href={`/product/${product.slug}`}>
+        <Link href={`/product/${product.slug}`} className='relative w-full aspect-square'>
           <Image
             src={product.images[0]}
             alt={product.name}
-            height={300}
-            width={300}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             priority={priority}
-            style={{
-              width: 'auto',
-              height: 'auto',
-              maxWidth: '100%',
-            }}
+            className='object-cover'
           />
         </Link>
       </CardHeader>

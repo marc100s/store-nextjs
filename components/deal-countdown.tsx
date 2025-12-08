@@ -74,17 +74,16 @@ const DealCountdown = () => {
             </Button>
           </div>
         </div>
-        <div className="flex justify-center">
-          <Image
-            src="/images/promo.jpg"
-            alt="promotion"
-            width={300}
-            height={200}
-            style={{
-              width: 'auto',
-              height: 'auto',
-            }}
-          />
+        <div className="flex justify-center items-center">
+          <div className="relative w-full max-w-md aspect-[3/2]">
+            <Image
+              src="/images/promo.jpg"
+              alt="promotion"
+              fill
+              sizes="(max-width: 768px) 100vw, 400px"
+              className="object-contain"
+            />
+          </div>
         </div>
       </section>
     );
@@ -112,18 +111,17 @@ const DealCountdown = () => {
           </Button>
         </div>
       </div>
-      <div className="flex justify-center">
-        <Image
-          src="/images/promo.jpg"
-          alt="promotion"
-          width={300}
-          height={200}
-          priority
-          style={{
-            width: 'auto',
-            height: 'auto',
-          }}
-        />
+      <div className="flex justify-center items-center">
+        <div className="relative w-full max-w-md aspect-[3/2]">
+          <Image
+            src="/images/promo.jpg"
+            alt="promotion"
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-contain"
+            priority
+          />
+        </div>
       </div>
     </section>
   );
