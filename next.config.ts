@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
+  // Turbopack configuration
+  turbopack: {
+    root: __dirname,
+  },
+  
   // TypeScript - ignore type errors during builds
   typescript: {
     ignoreBuildErrors: true,
