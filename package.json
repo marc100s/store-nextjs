@@ -52,11 +52,11 @@
     "isomorphic-dompurify": "^2.35.0",
     "lru-cache": "^11.2.4",
     "lucide-react": "^0.474.0",
-    "next": "^16.1.1",
+    "next": "^16.1.4",
     "next-auth": "5.0.0-beta.30",
     "next-themes": "^0.4.6",
     "postcss": "^8.5.6",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.0",
     "query-string": "^9.3.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
@@ -66,7 +66,7 @@
     "resend": "^4.8.0",
     "shadcn-ui": "^0.9.5",
     "slugify": "^1.6.6",
-    "stripe": "^20.1.2",
+    "stripe": "^20.2.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss": "^4.1.18",
     "tailwindcss-animate": "^1.0.7",
@@ -80,8 +80,8 @@
     "@prisma/client": "^7.2.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/jest": "^29.5.14",
-    "@types/node": "^20.19.29",
-    "@types/react": "^19.2.8",
+    "@types/node": "^20.19.30",
+    "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
     "@types/ws": "^8.18.1",
     "bufferutil": "^4.1.0",
@@ -101,14 +101,15 @@
       "react": "$react"
     }
   },
-  "packageManager": "pnpm@10.27.0",
+  "packageManager": "pnpm@10.28.1",
   "pnpm": {
     "overrides": {
       "brace-expansion": "^2.0.2",
       "minimatch": "^9.0.5",
       "glob": "^10.4.5",
       "inflight": "npm:@humanfs/inflight@^1.0.2",
-      "hono": ">=4.11.4"
+      "hono": ">=4.11.4",
+      "diff@<8.0.3": ">=8.0.3"
     },
     "onlyBuiltDependencies": [
       "@prisma/client",
