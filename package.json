@@ -52,7 +52,7 @@
     "isomorphic-dompurify": "^2.35.0",
     "lru-cache": "^11.2.4",
     "lucide-react": "^0.474.0",
-    "next": "^16.1.4",
+    "next": "^16.1.6",
     "next-auth": "5.0.0-beta.30",
     "next-themes": "^0.4.6",
     "postcss": "^8.5.6",
@@ -109,7 +109,10 @@
       "glob": "^10.4.5",
       "inflight": "npm:@humanfs/inflight@^1.0.2",
       "hono": ">=4.11.4",
-      "diff@<8.0.3": ">=8.0.3"
+      "diff@<8.0.3": ">=8.0.3",
+      "lodash@>=4.0.0 <=4.17.22": ">=4.17.23",
+      "hono@<4.11.7": ">=4.11.7",
+      "next@>=15.6.0-canary.0 <16.1.5": ">=16.1.5"
     },
     "onlyBuiltDependencies": [
       "@prisma/client",
