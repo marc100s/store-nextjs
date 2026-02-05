@@ -22,7 +22,7 @@
     "@auth/prisma-adapter": "^2.11.1",
     "@hookform/resolvers": "^3.10.0",
     "@neondatabase/serverless": "^0.10.4",
-    "@next/env": "^15.5.11",
+    "@next/env": "^15.5.12",
     "@octokit/plugin-paginate-rest": "^13.2.1",
     "@octokit/request": "^10.0.7",
     "@octokit/request-error": "^7.1.0",
@@ -81,7 +81,7 @@
     "@tailwindcss/postcss": "^4.1.18",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.19.31",
-    "@types/react": "^19.2.10",
+    "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
     "@types/ws": "^8.18.1",
     "bufferutil": "^4.1.0",
@@ -101,7 +101,7 @@
       "react": "$react"
     }
   },
-  "packageManager": "pnpm@10.28.1",
+  "packageManager": "pnpm@10.28.2",
   "pnpm": {
     "overrides": {
       "brace-expansion": "^2.0.2",
