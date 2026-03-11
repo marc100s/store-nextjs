@@ -121,3 +121,4 @@ amplify/backend/.amplifyrc
 .vscode/settings.json
 .idea/
 *.log
+.env copy
