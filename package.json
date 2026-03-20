@@ -15,14 +15,13 @@
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "email": "cp .env ./node_modules/react-email && email dev --dir email --port 3001",
-    "packageManager": "pnpm@7.5.1"
+    "email": "cp .env ./node_modules/react-email && email dev --dir email --port 3001"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
     "@hookform/resolvers": "^3.10.0",
     "@neondatabase/serverless": "^0.10.4",
-    "@next/env": "^15.5.13",
+    "@next/env": "^15.5.14",
     "@octokit/plugin-paginate-rest": "^13.2.1",
     "@octokit/request": "^10.0.8",
     "@octokit/request-error": "^7.1.0",
@@ -52,7 +51,7 @@
     "isomorphic-dompurify": "^2.36.0",
     "lru-cache": "^11.2.7",
     "lucide-react": "^0.474.0",
-    "next": "^16.1.7",
+    "next": "^16.2.0",
     "next-auth": "5.0.0-beta.30",
     "next-themes": "^0.4.6",
     "postcss": "^8.5.8",
@@ -68,7 +67,7 @@
     "slugify": "^1.6.8",
     "stripe": "^20.4.1",
     "tailwind-merge": "^2.6.1",
-    "tailwindcss": "^4.2.1",
+    "tailwindcss": "^4.2.2",
     "tailwindcss-animate": "^1.0.7",
     "uploadthing": "^7.7.4",
     "vaul": "^1.1.2",
@@ -78,7 +77,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
     "@prisma/client": "^7.5.0",
-    "@tailwindcss/postcss": "^4.2.1",
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.19.37",
     "@types/react": "^19.2.14",
@@ -102,28 +101,28 @@
     }
   },
   "packageManager": "pnpm@10.30.3+sha512.c961d1e0a2d8e354ecaa5166b822516668b7f44cb5bd95122d590dd81922f606f5473b6d23ec4a5be05e7fcd18e8488d47d978bbe981872f1145d06e9a740017",
-  "pnpm": {
-    "overrides": {
-      "brace-expansion": "^2.0.2",
-      "minimatch": "^9.0.5",
-      "glob": "^10.4.5",
-      "inflight": "npm:@humanfs/inflight@^1.0.2",
-      "hono": ">=4.11.4",
-      "diff@<8.0.3": ">=8.0.3",
-      "lodash@>=4.0.0 <=4.17.22": ">=4.17.23",
-      "hono@<4.11.7": ">=4.11.7",
-      "next@>=15.6.0-canary.0 <16.1.5": ">=16.1.5"
-    },
-    "onlyBuiltDependencies": [
-      "@prisma/client",
-      "@prisma/engines",
-      "@vercel/speed-insights",
-      "bufferutil",
-      "esbuild",
-      "msgpackr-extract",
-      "prisma",
-      "sharp",
-      "unrs-resolver"
-    ]
-  }
+"pnpm": {
+  "overrides": {
+    "brace-expansion": "^2.0.2",
+    "minimatch": "^9.0.5",
+    "glob": "^10.4.5",
+    "inflight": "npm:@humanfs/inflight@^1.0.2",
+    "hono": ">=4.11.7",
+    "diff@<8.0.3": ">=8.0.3",
+    "lodash@>=4.0.0 <=4.17.22": ">=4.17.23",
+    "next@>=15.6.0-canary.0 <16.1.5": ">=16.1.5",
+    "@hono/node-server": "latest"
+  },
+  "onlyBuiltDependencies": [
+    "@prisma/client",
+    "@prisma/engines",
+    "@vercel/speed-insights",
+    "bufferutil",
+    "esbuild",
+    "msgpackr-extract",
+    "prisma",
+    "sharp",
+    "unrs-resolver"
+  ]
+}
 }
