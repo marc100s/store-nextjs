@@ -13,14 +13,14 @@ pool:
 
 variables:
   NODE_VERSION: '20.x'
-  PNPM_VERSION: '7.5.1'
+  PNPM_VERSION: '10.30.3'
   PNPM_STORE_PATH: '$(Pipeline.Workspace)/.pnpm-store'
 
 steps:
   - checkout: self
     clean: 'true'
 
-  - task: NodeTool@0
+  - task: NodeTool@1
     displayName: Use Node.js $(NODE_VERSION)
     inputs:
       versionSpec: '$(NODE_VERSION)'
