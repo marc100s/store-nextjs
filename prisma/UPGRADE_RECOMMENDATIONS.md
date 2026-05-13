@@ -2,15 +2,23 @@
 
 ## Critical Updates (Breaking Changes - Test Thoroughly)
 
-### 1. React Email Components
-- **Current**: `@react-email/components@0.0.36`
-- **Latest**: `1.0.1`
-- **Action**: Major version update with potential breaking changes
+### 1. React Email
+- **Current**: `react-email@6.1.3`
+- **Deprecated package removed**: `@react-email/components`
+- **Action**: Import email components directly from `react-email`
 ```bash
-pnpm add @react-email/components@latest react-email@latest
+pnpm add react-email@latest
 ```
 
-### 2. Jest (Testing)
+### 2. shadcn CLI
+- **Deprecated package removed**: `shadcn-ui`
+- **Action**: Use the CLI without installing it as a project dependency
+```bash
+pnpm dlx shadcn@latest init
+pnpm dlx shadcn@latest add button
+```
+
+### 3. Jest (Testing)
 - **Current**: `jest@29.7.0`, `@types/jest@29.5.14`
 - **Latest**: `30.2.0`, `30.0.0`
 - **Action**: Major version update - may require config changes
@@ -18,7 +26,7 @@ pnpm add @react-email/components@latest react-email@latest
 pnpm add -D jest@^30 @types/jest@^30 ts-jest@^30
 ```
 
-### 3. Recharts
+### 4. Recharts
 - **Current**: `recharts@2.15.4`
 - **Latest**: `3.6.0`
 - **Action**: Major version with breaking changes
@@ -26,7 +34,7 @@ pnpm add -D jest@^30 @types/jest@^30 ts-jest@^30
 pnpm add recharts@^3
 ```
 
-### 4. Stripe
+### 5. Stripe
 - **Current**: `@stripe/react-stripe-js@3.10.0`, `@stripe/stripe-js@6.1.0`
 - **Latest**: `5.4.1`, `8.6.0`
 - **Action**: Major versions with potential API changes
@@ -34,7 +42,7 @@ pnpm add recharts@^3
 pnpm add @stripe/react-stripe-js@latest @stripe/stripe-js@latest
 ```
 
-### 5. Resend
+### 6. Resend
 - **Current**: `resend@4.8.0`
 - **Latest**: `6.6.0`
 - **Action**: Major version update
@@ -42,7 +50,7 @@ pnpm add @stripe/react-stripe-js@latest @stripe/stripe-js@latest
 pnpm add resend@latest
 ```
 
-### 6. Tailwind Merge
+### 7. Tailwind Merge
 - **Current**: `tailwind-merge@2.6.0`
 - **Latest**: `3.4.0`
 - **Action**: Major version update
@@ -93,20 +101,9 @@ pnpm add @hookform/resolvers@^5
 pnpm add -D dotenv@^17
 ```
 
-## Deprecated Subdependency Solution
+## Deprecated Subdependency Notes
 
-The `brace-expansion` override in your package.json already addresses the deprecated subdependencies. The updated override uses a simpler approach:
-
-```json
-"pnpm": {
-  "overrides": {
-    "brace-expansion": "^2.0.2",
-    "minimatch": "^9.0.5"
-  }
-}
-```
-
-This forces all subdependencies to use the latest non-deprecated versions.
+The remaining install warning is currently upstream: `glob@10.5.0` is still pulled by `jest@29.7.0` and `react-email@6.1.3`. That warning is not caused by a deprecated top-level dependency anymore.
 
 ## Testing Strategy
 
