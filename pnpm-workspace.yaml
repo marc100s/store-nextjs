@@ -1,0 +1,25 @@
+overrides:
+  brace-expansion: ^2.0.2
+  minimatch: ^9.0.5
+  glob: ^10.4.5
+  inflight: npm:@humanfs/inflight@^1.0.2
+  hono: ">=4.11.4"
+  diff@<8.0.3: ">=8.0.3"
+  lodash@>=4.0.0 <=4.17.22: ">=4.17.23"
+  hono@<4.11.7: ">=4.11.7"
+  next@>=15.6.0-canary.0 <16.1.5: ">=16.1.5"
+  effect@<3.20.0: ">=3.20.0"
+  "@hono/node-server@<1.19.13": ">=1.19.13"
+  postcss@<8.5.10: ">=8.5.10"
+  ws: ^8.20.1
+
+onlyBuiltDependencies:
+  - "@prisma/client"
+  - "@prisma/engines"
+  - "@vercel/speed-insights"
+  - bufferutil
+  - esbuild
+  - msgpackr-extract
+  - prisma
+  - sharp
+  - unrs-resolver

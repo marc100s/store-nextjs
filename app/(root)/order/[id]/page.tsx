@@ -5,6 +5,7 @@ import { ShippingAddress } from "@/types";
 import OrderDetailsTable from './order-details-table';
 import { auth } from "@/auth";
 import Stripe from "stripe";
+import { formatDateTime } from "@/lib/utils";
 
 
 export const metadata: Metadata = {
@@ -44,6 +45,10 @@ export const metadata: Metadata = {
           ...order,
           shippingAddress: order.shippingAddress as ShippingAddress,
         }}
+        formattedPaidAt={order.paidAt ? formatDateTime(order.paidAt).dateTime : null}
+        formattedDeliveredAt={
+          order.deliveredAt ? formatDateTime(order.deliveredAt).dateTime : null
+        }
         stripeClientSecret={client_secret}
         paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
         isAdmin={session?.user?.role === 'admin' || false}

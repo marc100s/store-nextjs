@@ -11,7 +11,7 @@ import {
     Section,
     Tailwind,
     Text,
-  } from 'react-email';
+  } from '@react-email/components';
   import { Order } from '@/types';
   import { formatCurrency } from '@/lib/utils';
   import sampleData from '@/db/sample-data';

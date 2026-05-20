@@ -70,7 +70,7 @@
     "tailwindcss-animate": "^1.0.7",
     "uploadthing": "^7.7.4",
     "vaul": "^1.1.2",
-    "ws": "^8.19.0",
+    "ws": "^8.20.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -94,29 +94,5 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@10.28.2",
-  "pnpm": {
-    "overrides": {
-      "brace-expansion": "^2.0.2",
-      "minimatch": "^9.0.5",
-      "glob": "^10.4.5",
-      "inflight": "npm:@humanfs/inflight@^1.0.2",
-      "hono": ">=4.11.4",
-      "diff@<8.0.3": ">=8.0.3",
-      "lodash@>=4.0.0 <=4.17.22": ">=4.17.23",
-      "hono@<4.11.7": ">=4.11.7",
-      "next@>=15.6.0-canary.0 <16.1.5": ">=16.1.5"
-    },
-    "onlyBuiltDependencies": [
-      "@prisma/client",
-      "@prisma/engines",
-      "@vercel/speed-insights",
-      "bufferutil",
-      "esbuild",
-      "msgpackr-extract",
-      "prisma",
-      "sharp",
-      "unrs-resolver"
-    ]
-  }
+  "packageManager": "pnpm@10.28.2"
 }

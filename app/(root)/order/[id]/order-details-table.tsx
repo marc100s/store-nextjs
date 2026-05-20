@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { formatCurrency, formatDateTime, formatId } from '@/lib/utils';
+import { formatCurrency, formatId } from '@/lib/utils';
 import { Order } from '@/types';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -32,11 +32,15 @@ import {
 
 const OrderDetailsTable = ({
   order,
+  formattedPaidAt,
+  formattedDeliveredAt,
   paypalClientId,
   isAdmin,
   stripeClientSecret
 }: {
   order: Omit<Order, 'paymentResult'>;
+  formattedPaidAt: string | null;
+  formattedDeliveredAt: string | null;
   paypalClientId: string;
   isAdmin: boolean;
   stripeClientSecret: string | null;
@@ -52,8 +56,6 @@ const OrderDetailsTable = ({
     paymentMethod,
     isDelivered,
     isPaid,
-    paidAt,
-    deliveredAt,
   } = order;
 
   const { toast } = useToast();
@@ -151,7 +153,7 @@ const OrderDetailsTable = ({
               <p className='mb-2'>{paymentMethod}</p>
               {isPaid ? (
                 <Badge variant='secondary'>
-                  Paid at {formatDateTime(paidAt!).dateTime}
+                  Paid at {formattedPaidAt}
                 </Badge>
               ) : (
                 <Badge variant='destructive'>Not paid</Badge>
@@ -168,7 +170,7 @@ const OrderDetailsTable = ({
               </p>
               {isDelivered ? (
                 <Badge variant='secondary'>
-                  Delivered at {formatDateTime(deliveredAt!).dateTime}
+                  Delivered at {formattedDeliveredAt}
                 </Badge>
               ) : (
                 <Badge variant='destructive'>Not Delivered</Badge>
